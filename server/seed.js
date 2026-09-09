@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { User, Doctor, Medicine, Bed } from "./models/index.js";
 dotenv.config();
 await mongoose.connect(
-  process.env.MONGO_URI || "mongodb+srv://sumitsahai068_db_user:pztV5XGLbtTioYMX@cluster0.reajzuq.mongodb.net/hospital_information_system",
+  process.env.MONGO_URI
 );
 console.log("Connected to MongoDB database:", mongoose.connection.name);
 await User.updateOne(
