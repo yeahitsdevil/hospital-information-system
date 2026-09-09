@@ -1,0 +1,8 @@
+<div id="root"></div>
+<script>
+  (function () {
+    const theme = localStorage.getItem("his_theme") || "light";
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script type="module" src="/src/main.jsx"></script>

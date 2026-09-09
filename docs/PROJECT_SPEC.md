@@ -1,0 +1,5 @@
+# Source requirements distilled from supplied presentation
+
+The presentation describes an Integrated Digital Platform for clinical, administrative and financial hospital operations. It calls for hierarchical staff management, an end-to-end patient workflow, automated clinical links between prescriptions/pharmacy/lab, resource allocation, consolidated billing, patient administration, EMR, doctor management, appointments, laboratory management, pharmacy management, billing, bed/ward management, data security/backup, scalability/integration, and objectives including emergency response optimization, inpatient care, operational automation, centralized doctor management, modular billing, lab/pharmacy integration and staff workload balancing.
+
+The presentation also contains DFD Level 0/1/2, ERD/EERD and trigger diagrams. The implementation in this package provides the corresponding core entities and REST API foundation; exact diagram-specific relationships that were graphical-only are represented pragmatically in the Mongoose models.
