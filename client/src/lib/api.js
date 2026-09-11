@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API = import.meta.env.VITE_API_URL || "https://hospital-information-system-vv7p.onrender.com";
 async function api(path, opts = {}) {
   const token = localStorage.getItem("his_token");
   const r = await fetch(API + path, {
