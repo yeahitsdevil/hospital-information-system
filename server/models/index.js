@@ -30,7 +30,7 @@ export const Patient = mongoose.model(
   "Patient",
   new mongoose.Schema(
     {
-      patientId: { type: String, unique: true },
+      patientId: { type: String, unique: true, sparse: true },
       name: { type: String, required: true },
       dob: Date,
       gender: String,
