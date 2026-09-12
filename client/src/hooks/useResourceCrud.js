@@ -9,8 +9,14 @@ function useResourceCrud({
   setShow,
   setForm,
   load,
+  canCreate,
+  canDelete,
 }) {
   const deleteOne = async (id) => {
+    if (!canDelete) {
+      alert("You do not have permission to delete this resource.");
+      return;
+    }
     const record = rows.find((r) => r._id === id);
 
     const displayName =
@@ -40,6 +46,10 @@ function useResourceCrud({
   };
 
   const deleteSelected = async () => {
+    if (!canDelete) {
+      alert("You do not have permission to delete this resource.");
+      return;
+    }
     if (selected.length === 0) {
       alert("Please select at least one record.");
       return;
@@ -71,6 +81,10 @@ function useResourceCrud({
 
   const save = async (e) => {
     e.preventDefault();
+    if (!canCreate) {
+      alert("You do not have permission to create this resource.");
+      return;
+    }
 
     try {
       let body = { ...form };

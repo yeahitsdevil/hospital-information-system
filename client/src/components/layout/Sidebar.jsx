@@ -18,17 +18,19 @@ function Sidebar({ open, setOpen, user, onLogout }) {
       </div>
 
       <nav>
-        {navItems.map(([to, label, Icon]) => (
-          <Link
-            key={to}
-            onClick={() => setOpen(false)}
-            className={loc.pathname === to ? "active" : ""}
-            to={to}
-          >
-            <Icon size={19} />
-            {label}
-          </Link>
-        ))}
+        {navItems
+          .filter(([, , , allowedRoles]) => allowedRoles.includes(user.role))
+          .map(([to, label, Icon]) => (
+            <Link
+              key={to}
+              onClick={() => setOpen(false)}
+              className={loc.pathname === to ? "active" : ""}
+              to={to}
+            >
+              <Icon size={19} />
+              {label}
+            </Link>
+          ))}
       </nav>
 
       <div className="sidebar-bottom">

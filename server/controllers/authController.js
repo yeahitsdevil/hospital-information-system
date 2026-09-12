@@ -10,6 +10,12 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    if (!u.active) {
+      return res.status(403).json({
+        message: "Account is inactive",
+      });
+    }
+
     const token = jwt.sign(
       { id: u._id, role: u.role, name: u.name },
       process.env.JWT_SECRET,

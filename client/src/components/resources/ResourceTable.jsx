@@ -7,6 +7,7 @@ function ResourceTable({
   toggleSelectAll,
   deleteOne,
   q,
+  canDelete,
 }) {
   return (
     <div className="table-wrap">
@@ -49,22 +50,21 @@ function ResourceTable({
               ))}
 
               <td>
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteOne(r._id)}
-                >
-                  Delete
-                </button>
+                {canDelete && (
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteOne(r._id)}
+                  >
+                    Delete
+                  </button>
+                )}
               </td>
             </tr>
           ))}
 
           {filteredRows.length === 0 && (
             <tr>
-              <td
-                colSpan={c.fields.slice(0, 6).length + 2}
-                className="empty"
-              >
+              <td colSpan={c.fields.slice(0, 6).length + 2} className="empty">
                 {q
                   ? "No records match your search."
                   : "No records yet. Use “Add New” to create one."}

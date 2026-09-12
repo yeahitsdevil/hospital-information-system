@@ -1,5 +1,5 @@
 import { configs } from "../config/resourceConfig";
-
+import { permissions } from "../config/permissions";
 import useResourceData from "../hooks/useResourceData";
 import useResourceSelection from "../hooks/useResourceSelection";
 import useResourceCrud from "../hooks/useResourceCrud";
@@ -16,6 +16,12 @@ import PatientRegistrationModal from "../components/resources/PatientRegistratio
 function ResourcePage({ type }) {
   const c = configs[type];
 
+  const user = JSON.parse(localStorage.getItem("his_user") || "{}");
+  const resourcePermissions = permissions[type] || {};
+
+  const canCreate = resourcePermissions.create?.includes(user.role);
+  const canDelete = resourcePermissions.delete?.includes(user.role);
+
   const {
     show,
     setShow,
@@ -27,13 +33,7 @@ function ResourcePage({ type }) {
     setNewPatientForm,
   } = useResourceForm();
 
-  const {
-    rows,
-    patients,
-    setPatients,
-    doctors,
-    load,
-  } = useResourceData(type);
+  const { rows, patients, setPatients, doctors, load } = useResourceData(type);
 
   const { q, setQ, filteredRows } = useResourceFilter(rows);
 
@@ -54,6 +54,8 @@ function ResourcePage({ type }) {
     setShow,
     setForm,
     load,
+    canCreate,
+    canDelete,
   });
 
   const { registerPatient } = usePatientRegistration({
@@ -70,6 +72,8 @@ function ResourcePage({ type }) {
         c={c}
         setShow={setShow}
         deleteSelected={deleteSelected}
+        canCreate={canCreate}
+        canDelete={canDelete}
       />
 
       <ResourceToolbar
@@ -88,6 +92,7 @@ function ResourcePage({ type }) {
         toggleSelectAll={toggleSelectAll}
         deleteOne={deleteOne}
         q={q}
+        canDelete={canDelete}
       />
 
       <AddResourceModal
