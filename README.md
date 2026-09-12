@@ -1,6 +1,6 @@
 # Hospital Information System (HIS) — MERN
 
-A full-stack Hospital Information System based on the requirements in the supplied project presentation.
+A full-stack Hospital Information System.
 
 ## Included modules
 - Dashboard
