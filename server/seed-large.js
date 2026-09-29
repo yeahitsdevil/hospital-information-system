@@ -147,10 +147,15 @@ async function main() {
         : i%3===1
           ? ["Tuesday","Thursday","Saturday"]
           : ["Monday","Tuesday","Thursday","Friday"],
+      consultation_fee:500+(i%6)*100,
       consultationFee:500+(i%6)*100
     });
   }
   const doctors = await Doctor.insertMany(doctorData);
+  await User.updateOne(
+    { email: "doctor@his.local" },
+    { $set: { emp_id: doctors[0]._id } },
+  );
 
   const patientData = [];
   for (let i=1;i<=100;i++) {

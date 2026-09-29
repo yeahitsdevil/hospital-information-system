@@ -43,9 +43,15 @@ function ResourceTable({
 
               {c.fields.slice(0, 6).map((f) => (
                 <td key={f}>
-                  {typeof r[f] === "object" && r[f]
-                    ? r[f].name || r[f].patientId || "Linked record"
-                    : String(r[f] ?? "—")}
+                  {f === "is_available" ? (
+                    <span className={`status-pill ${r.is_available !== false ? "available" : "occupied"}`}>
+                      {r.is_available !== false ? "Available" : "Not Available"}
+                    </span>
+                  ) : typeof r[f] === "object" && r[f] ? (
+                    r[f].name || r[f].patientId || "Linked record"
+                  ) : (
+                    String(r[f] ?? "—")
+                  )}
                 </td>
               ))}
 

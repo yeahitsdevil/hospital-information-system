@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { User } from "../models/index.js";
+import { User, Patient, Doctor, Employee, MedicalStaff, AdminStaff } from "../models/index.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -35,12 +35,14 @@ export const createUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const doctor = role === "doctor" ? await Doctor.findOne({ email: email.toLowerCase().trim() }) : null;
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       role,
       phone,
+      ...(doctor ? { emp_id: doctor._id } : {}),
     });
 
     const safeUser = user.toObject();
@@ -142,5 +144,227 @@ export const deactivateUser = async (req, res) => {
     res.status(400).json({
       message: error.message,
     });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let roleDetails = null;
+
+    if (user.role === "patient") {
+      let patient = null;
+      if (user.patient_id) {
+        patient = await Patient.findById(user.patient_id);
+      }
+      if (!patient) {
+        patient = await Patient.findOne({ $or: [{ email: user.email }, { user_id: user._id }] });
+      }
+      if (!patient) {
+        const count = await Patient.countDocuments();
+        const patient_id = `PAT-${String(count + 1001).padStart(4, "0")}`;
+        patient = await Patient.create({
+          patient_id,
+          patientId: patient_id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone || "",
+          gender: "Other",
+          dob: new Date("2000-01-01"),
+          user_id: user._id,
+        });
+        user.patient_id = patient._id;
+        await user.save();
+      }
+      roleDetails = patient;
+    } else if (user.role === "doctor") {
+      let doctor = null;
+      if (user.emp_id) {
+        doctor = await Doctor.findById(user.emp_id);
+      }
+      if (!doctor) {
+        doctor = await Doctor.findOne({ email: user.email });
+      }
+      if (!doctor) {
+        doctor = await Doctor.findOne({ name: { $regex: new RegExp(user.name.replace(/^Dr\.\s*/i, ""), "i") } });
+      }
+      roleDetails = doctor;
+    } else if (["nurse", "pharmacist", "lab"].includes(user.role)) {
+      const staffType = user.role === "nurse" ? "Nurse" : user.role === "pharmacist" ? "Pharmacist" : "Lab Technician";
+      const staff = await MedicalStaff.findOne({
+        $or: [{ name: { $regex: new RegExp(user.name, "i") } }, { staff_type: staffType }]
+      });
+      roleDetails = staff;
+    } else if (["receptionist", "accountant", "admin"].includes(user.role)) {
+      const adminRole = user.role === "receptionist" ? "Receptionist" : user.role === "accountant" ? "Billing" : "Executive";
+      const adminStaff = await AdminStaff.findOne({
+        $or: [{ email: user.email }, { admin_role: adminRole }]
+      });
+      roleDetails = adminStaff;
+    }
+
+    res.json({
+      user,
+      role: user.role,
+      roleDetails: roleDetails || {},
+      is_available: user.is_available ?? true,
+      status_note: user.status_note || "Available",
+    });
+  } catch (error) {
+    console.error("GET /api/users/profile failed:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const {
+      name,
+      phone,
+      password,
+      is_available,
+      status_note,
+      // Patient specific fields
+      dob,
+      gender,
+      blood_group,
+      bloodGroup,
+      address,
+      emergency_contact,
+      emergencyContact,
+      allergies,
+      // Doctor specific fields
+      specialization,
+      department,
+      consultation_fee,
+      consultationFee,
+      availableDays,
+      license_no,
+      // Staff specific fields
+      staff_type,
+    } = req.body;
+
+    if (name) user.name = name.trim();
+    if (phone !== undefined) user.phone = phone.trim();
+    if (is_available !== undefined) user.is_available = Boolean(is_available);
+    if (status_note !== undefined) user.status_note = status_note.trim();
+
+    if (password && password.length >= 6) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    await user.save();
+
+    let updatedRoleDetails = null;
+
+    if (user.role === "patient") {
+      let patient = null;
+      if (user.patient_id) patient = await Patient.findById(user.patient_id);
+      if (!patient) patient = await Patient.findOne({ $or: [{ email: user.email }, { user_id: user._id }] });
+
+      if (patient) {
+        if (name) patient.name = name.trim();
+        if (phone !== undefined) patient.phone = phone.trim();
+        if (dob) patient.dob = new Date(dob);
+        if (gender) patient.gender = gender;
+        const bg = blood_group || bloodGroup;
+        if (bg) {
+          patient.blood_group = bg;
+          patient.bloodGroup = bg;
+        }
+        if (address !== undefined) patient.address = address;
+        const ec = emergency_contact || emergencyContact;
+        if (ec !== undefined) {
+          patient.emergency_contact = ec;
+          patient.emergencyContact = ec;
+        }
+        if (allergies !== undefined) patient.allergies = allergies;
+        await patient.save();
+        updatedRoleDetails = patient;
+      }
+    } else if (user.role === "doctor") {
+      let doctor = null;
+      if (user.emp_id) doctor = await Doctor.findById(user.emp_id);
+      if (!doctor) doctor = await Doctor.findOne({ email: user.email });
+
+      if (doctor) {
+        if (name) doctor.name = name.trim();
+        if (phone !== undefined) doctor.phone = phone.trim();
+        if (specialization) doctor.specialization = specialization;
+        if (department) doctor.department = department;
+        const fee = consultation_fee ?? consultationFee;
+        if (fee !== undefined) {
+          doctor.consultation_fee = Number(fee);
+          doctor.consultationFee = Number(fee);
+        }
+        if (availableDays) doctor.availableDays = availableDays;
+        if (license_no !== undefined) doctor.license_no = license_no;
+        if (is_available !== undefined) doctor.is_available = Boolean(is_available);
+        if (status_note !== undefined) doctor.status_note = status_note.trim();
+        await doctor.save();
+        updatedRoleDetails = doctor;
+      }
+    }
+
+    const safeUser = user.toObject();
+    delete safeUser.password;
+
+    res.json({
+      user: safeUser,
+      role: user.role,
+      roleDetails: updatedRoleDetails,
+      is_available: user.is_available,
+      status_note: user.status_note,
+      message: "Profile updated successfully",
+    });
+  } catch (error) {
+    console.error("PUT /api/users/profile failed:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const updateAvailability = async (req, res) => {
+  try {
+    const { is_available, status_note } = req.body;
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (is_available !== undefined) user.is_available = Boolean(is_available);
+    if (status_note !== undefined) user.status_note = status_note;
+
+    await user.save();
+
+    // If user is a doctor, synchronize Doctor document
+    if (user.role === "doctor") {
+      await Doctor.updateMany(
+        { $or: [{ _id: user.emp_id }, { email: user.email }, { name: user.name }] },
+        {
+          $set: {
+            is_available: user.is_available,
+            status_note: user.status_note,
+          },
+        }
+      );
+    }
+
+    res.json({
+      is_available: user.is_available,
+      status_note: user.status_note,
+      message: `Status updated to ${user.is_available ? "Available" : "Not Available"}`,
+    });
+  } catch (error) {
+    console.error("PATCH /api/users/availability failed:", error);
+    res.status(400).json({ message: error.message });
   }
 };

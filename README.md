@@ -27,6 +27,8 @@ React + Vite, Node.js, Express, MongoDB, Mongoose, JWT, bcryptjs.
 4. In `client`: `npm install` then `npm run dev`.
 5. Open the Vite URL shown in the terminal.
 
-Default seeded admin: `admin@his.local` / `Admin@123`
+The seed command provisions demo accounts for each staff role. Use `admin@his.local` / `Admin@123` or the login screen's staff shortcuts (password: `Demo@123`). Public sign-up is for patients; staff accounts must be created by an administrator.
+
+Appointment booking shows the doctor's consultation fee and requires a payment confirmation before booking. This academic build records a demo UPI/card payment; it does not connect to a payment gateway.
 
 > This is an academic/project implementation. Do not use it for real patient care or production healthcare data without appropriate security, compliance, audit, backup, and clinical validation.

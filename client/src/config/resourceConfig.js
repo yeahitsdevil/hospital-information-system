@@ -22,8 +22,8 @@ const configs = {
       "specialization",
       "department",
       "phone",
-      "email",
       "consultationFee",
+      "is_available",
     ],
   },
   appointments: {

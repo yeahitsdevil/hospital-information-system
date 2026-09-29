@@ -12,8 +12,8 @@ function Sidebar({ open, setOpen, user, onLogout }) {
         <span>+</span>
 
         <div>
-          <b>HIS</b>
-          <small>Care Management</small>
+          <b>MANIT — HIS</b>
+          <small>Digital Health System</small>
         </div>
       </div>
 
@@ -34,14 +34,27 @@ function Sidebar({ open, setOpen, user, onLogout }) {
       </nav>
 
       <div className="sidebar-bottom">
-        <div className="user-mini">
-          <div className="avatar">{user.name?.[0] || "A"}</div>
+        <Link
+          to="/profile"
+          className="user-mini user-mini-link"
+          onClick={() => setOpen(false)}
+          title="Manage My Profile & Availability"
+        >
+          <div className="avatar-wrapper">
+            <div className="avatar">{user.name?.[0] || "A"}</div>
+            <span
+              className={`sidebar-status-dot ${user.is_available !== false ? "dot-online" : "dot-offline"}`}
+              title={user.is_available !== false ? "Status: Available" : "Status: Not Available"}
+            />
+          </div>
 
           <div>
-            <b>{user.name || "Admin"}</b>
-            <small>{user.role || "admin"}</small>
+            <b>{user.name || "User"}</b>
+            <small>
+              {user.role || "patient"} • {user.is_available !== false ? "Available" : "Away"}
+            </small>
           </div>
-        </div>
+        </Link>
 
         <button
           className="logout"
