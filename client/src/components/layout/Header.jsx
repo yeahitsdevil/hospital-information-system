@@ -1,4 +1,5 @@
 import { Bell, Menu, Search, X } from "lucide-react";
+import { api } from "../../lib/api";
 
 function Header({
   open,
@@ -183,6 +184,36 @@ function Header({
         )}
       </div>
 
+      {/* AVAILABILITY QUICK TOGGLE */}
+      <button
+        type="button"
+        className={`header-availability-badge ${user.is_available !== false ? "status-online" : "status-offline"}`}
+        onClick={async () => {
+          try {
+            const nextStatus = !(user.is_available !== false);
+            const nextNote = nextStatus ? "Available" : "Not Available (Away)";
+            user.is_available = nextStatus;
+            user.status_note = nextNote;
+            localStorage.setItem("his_user", JSON.stringify(user));
+
+            await api("/users/availability", {
+              method: "PATCH",
+              body: JSON.stringify({ is_available: nextStatus, status_note: nextNote }),
+            });
+            // Force re-render if needed
+            window.dispatchEvent(new Event("storage"));
+          } catch (e) {
+            console.error("Failed to update availability:", e);
+          }
+        }}
+        title={`Click to switch status (Currently ${user.is_available !== false ? "Available" : "Not Available"})`}
+      >
+        <span className="dot-indicator" />
+        <span className="availability-text">
+          {user.is_available !== false ? "Available" : "Not Available"}
+        </span>
+      </button>
+
       {/* THEME TOGGLE */}
       <button
         className="theme-toggle"
@@ -198,8 +229,15 @@ function Header({
         {theme === "light" ? "🌙" : "☀️"}
       </button>
 
-      {/* USER AVATAR */}
-      <div className="top-avatar">{user.name?.[0] || "A"}</div>
+      {/* USER AVATAR WITH LINK TO PROFILE */}
+      <button
+        type="button"
+        className="top-avatar-btn"
+        onClick={() => nav("/profile")}
+        title="View & Manage Profile"
+      >
+        <div className="top-avatar">{user.name?.[0] || "A"}</div>
+      </button>
     </header>
   );
 }

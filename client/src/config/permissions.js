@@ -1,18 +1,18 @@
 export const permissions = {
   patients: {
-    create: ["admin", "receptionist"],
-    update: ["admin", "doctor", "nurse", "receptionist"],
+    create: ["admin", "receptionist", "patient"],
+    update: ["admin", "doctor", "nurse", "receptionist", "patient"],
     delete: ["admin"],
   },
 
   doctors: {
     create: ["admin"],
-    update: ["admin"],
+    update: ["admin", "doctor"],
     delete: ["admin"],
   },
 
   appointments: {
-    create: ["admin", "doctor", "receptionist"],
+    create: ["admin", "doctor", "receptionist", "patient"],
     update: ["admin", "doctor", "nurse", "receptionist"],
     delete: ["admin"],
   },

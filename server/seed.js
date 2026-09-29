@@ -14,6 +14,20 @@ await User.updateOne(
       name: "System Administrator",
       password: await bcrypt.hash("Admin@123", 10),
       role: "admin",
+      is_available: true,
+    },
+  },
+  { upsert: true },
+);
+await User.updateOne(
+  { email: "patient@his.local" },
+  {
+    $set: {
+      name: "Aarav Sharma (Patient)",
+      password: await bcrypt.hash("Demo@123", 10),
+      role: "patient",
+      is_available: true,
+      status_note: "Available",
     },
   },
   { upsert: true },
@@ -24,15 +38,39 @@ if ((await Doctor.countDocuments()) === 0)
       name: "Dr. Ananya Sharma",
       specialization: "Cardiology",
       department: "Cardiology",
+      consultation_fee: 800,
       consultationFee: 800,
     },
     {
       name: "Dr. Rahul Verma",
       specialization: "General Medicine",
       department: "Medicine",
+      consultation_fee: 500,
       consultationFee: 500,
     },
   ]);
+const demoStaffPassword = await bcrypt.hash("Demo@123", 10);
+for (const account of [
+  { name: "Dr. Ananya Sharma", email: "doctor@his.local", role: "doctor", phone: "9000000002" },
+  { name: "Nurse Coordinator", email: "nurse@his.local", role: "nurse", phone: "9000000003" },
+  { name: "Front Desk Receptionist", email: "reception@his.local", role: "receptionist", phone: "9000000004" },
+  { name: "Pharmacy Manager", email: "pharmacy@his.local", role: "pharmacist", phone: "9000000005" },
+  { name: "Laboratory Technician", email: "lab@his.local", role: "lab", phone: "9000000006" },
+  { name: "Accounts Manager", email: "accounts@his.local", role: "accountant", phone: "9000000007" },
+]) {
+  const update = {
+    name: account.name,
+    password: demoStaffPassword,
+    role: account.role,
+    phone: account.phone,
+    active: true,
+  };
+  if (account.role === "doctor") {
+    const doctor = await Doctor.findOne({ email: account.email }) || await Doctor.findOne().sort({ createdAt: 1 });
+    if (doctor) update.emp_id = doctor._id;
+  }
+  await User.updateOne({ email: account.email }, { $set: update }, { upsert: true });
+}
 if ((await Medicine.countDocuments()) === 0)
   await Medicine.insertMany([
     {

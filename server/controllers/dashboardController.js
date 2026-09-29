@@ -3,95 +3,100 @@ import {
   Doctor,
   Appointment,
   Medicine,
+  Room,
   Bed,
   Bill,
+  Admission,
+  MedicalStaff,
 } from "../models/index.js";
 
 export const getDashboard = async (req, res) => {
   try {
-    const role = req.user.role;
+    const role = req.user?.role || "admin";
 
-    const canReadPatients = [
-      "admin",
-      "doctor",
-      "nurse",
-      "receptionist",
-      "pharmacist",
-      "lab",
-      "accountant",
-    ].includes(role);
+    const [
+      totalPatients,
+      opdPatients,
+      ipdPatients,
+      totalDoctors,
+      scheduledAppointments,
+      availableRooms,
+      occupiedRooms,
+      icuAvailable,
+      lowStockMeds,
+      expiringMeds,
+      billsAggregation,
+      pendingBillsCount,
+      activeNursesCount,
+    ] = await Promise.all([
+      Patient.countDocuments(),
+      Patient.countDocuments({ status: "OPD" }),
+      Patient.countDocuments({ status: "IPD" }),
+      Doctor.countDocuments(),
+      Appointment.countDocuments({
+        status: "scheduled",
+        ...(role === "doctor" ? { $or: [{ doctor_emp_id: req.user.emp_id }, { doctor: req.user.emp_id }] } : {}),
+        ...(role === "patient" ? { patient_id: req.user.patient_id } : {}),
+      }),
+      Room.countDocuments({ status: "available" }),
+      Room.countDocuments({ status: "occupied" }),
+      Room.countDocuments({ room_type: "ICU", status: "available" }),
+      Medicine.countDocuments({
+        $expr: {
+          $lte: ["$quantity", { $ifNull: ["$reorder_level", "$reorderLevel", 15] }],
+        },
+      }),
+      Medicine.countDocuments({
+        $or: [
+          { expiry_date: { $lte: new Date(Date.now() + 30 * 86400000) } },
+          { expiryDate: { $lte: new Date(Date.now() + 30 * 86400000) } },
+        ],
+      }),
+      Bill.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalRevenue: { $sum: { $ifNull: ["$total_amount", "$total", 0] } },
+          },
+        },
+      ]),
+      Bill.countDocuments({ status: "pending" }),
+      MedicalStaff.countDocuments({ staff_type: "Nurse" }),
+    ]);
 
-    const canReadDoctors = [
-      "admin",
-      "doctor",
-      "nurse",
-      "receptionist",
-      "pharmacist",
-      "accountant",
-    ].includes(role);
+    const revenue = billsAggregation[0]?.totalRevenue || 0;
 
-    const canReadAppointments = [
-      "admin",
-      "doctor",
-      "nurse",
-      "receptionist",
-    ].includes(role);
-
-    const canReadBeds = ["admin", "doctor", "nurse", "receptionist"].includes(
-      role,
-    );
-
-    const canReadMedicineAlerts = ["admin", "pharmacist"].includes(role);
-
-    const canReadRevenue = ["admin", "accountant"].includes(role);
-
-    const [patients, doctors, appointments, beds, medicines, bills] =
-      await Promise.all([
-        canReadPatients ? Patient.countDocuments() : Promise.resolve(null),
-
-        canReadDoctors ? Doctor.countDocuments() : Promise.resolve(null),
-
-        canReadAppointments
-          ? Appointment.countDocuments({ status: "scheduled" })
-          : Promise.resolve(null),
-
-        canReadBeds
-          ? Bed.countDocuments({ status: "available" })
-          : Promise.resolve(null),
-
-        canReadMedicineAlerts
-          ? Medicine.countDocuments({
-              $expr: {
-                $lte: ["$quantity", "$reorderLevel"],
-              },
-            })
-          : Promise.resolve(null),
-
-        canReadRevenue
-          ? Bill.aggregate([
-              {
-                $group: {
-                  _id: null,
-                  total: { $sum: "$total" },
-                },
-              },
-            ])
-          : Promise.resolve([]),
-      ]);
+    if (["doctor", "patient"].includes(role)) {
+      return res.json({ appointments: scheduledAppointments });
+    }
 
     res.json({
-      patients,
-      doctors,
-      appointments,
-      availableBeds: beds,
-      lowStock: medicines,
-      revenue: bills[0]?.total ?? null,
+      patients: totalPatients,
+      opdPatients,
+      ipdPatients,
+      doctors: totalDoctors,
+      appointments: scheduledAppointments,
+      availableBeds: availableRooms,
+      occupiedBeds: occupiedRooms,
+      icuAvailable,
+      lowStock: lowStockMeds,
+      expiringMedicines: expiringMeds,
+      revenue,
+      pendingBills: pendingBillsCount,
+      activeNurses: activeNursesCount,
+      institution: "Maulana Azad National Institute of Technology (MANIT) Bhopal",
+      mentors: ["Dr. Jay Kumar Jain", "Dr. Kuldeep Singh Yadav"],
+      team: [
+        { name: "Ashutosh Sharma", roll: "25204031148" },
+        { name: "Nikita Patidar", roll: "25204031132" },
+        { name: "Bhavishya Sisodiya", roll: "25204031140" },
+        { name: "Akarshan Pathak", roll: "25204031107" },
+        { name: "Sumit Sahai", roll: "25204031124" },
+        { name: "Nitish Kumar", roll: "25204031115" },
+      ],
     });
   } catch (error) {
     console.error("GET /api/dashboard failed:", error);
-
-    res.status(500).json({
-      message: "Failed to load dashboard data",
-    });
+    res.status(500).json({ message: "Failed to load dashboard data" });
   }
 };

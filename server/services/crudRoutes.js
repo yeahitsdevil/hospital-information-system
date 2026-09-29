@@ -26,6 +26,25 @@ export const crud = (router, path, Model, populateFields = []) => {
       try {
         let query = Model.find();
 
+        // Scope data for patient role so patients only see their records
+        if (req.user?.role === "patient" && ["appointments", "prescriptions", "lab-tests", "bills"].includes(path)) {
+          let patientId = req.user.patient_id;
+          if (!patientId) {
+            const p = await Patient.findOne({ $or: [{ user_id: req.user.id }, { email: req.user.email }] });
+            if (p) patientId = p._id;
+          }
+          if (patientId) {
+            query = query.where({ $or: [{ patient: patientId }, { patient_id: patientId }] });
+          } else {
+            return res.json([]);
+          }
+        }
+
+        if (req.user?.role === "doctor" && ["appointments", "prescriptions", "lab-tests"].includes(path)) {
+          if (!req.user.emp_id) return res.json([]);
+          query = query.where({ $or: [{ doctor: req.user.emp_id }, { doctor_emp_id: req.user.emp_id }] });
+        }
+
         // Populate only fields that actually exist
         if (
           ["appointments", "prescriptions", "lab-tests", "bills"].includes(path)
@@ -161,6 +180,19 @@ export const crud = (router, path, Model, populateFields = []) => {
           });
         }
 
+        if (req.user?.role === "doctor" && ["appointments", "prescriptions", "lab-tests"].includes(path)) {
+          const ownerDoctor = d.doctor_emp_id || d.doctor;
+          if (String(ownerDoctor) !== String(req.user.emp_id)) {
+            return res.status(403).json({ message: "You can only view records for your own patients" });
+          }
+        }
+        if (req.user?.role === "patient" && ["appointments", "prescriptions", "lab-tests", "bills"].includes(path)) {
+          const ownPatient = d.patient_id || d.patient;
+          if (String(ownPatient) !== String(req.user.patient_id)) {
+            return res.status(403).json({ message: "You can only view your own records" });
+          }
+        }
+
         res.json(d);
       } catch (e) {
         res.status(500).json({
@@ -179,7 +211,14 @@ export const crud = (router, path, Model, populateFields = []) => {
     permission(resourcePermissions.update),
     async (req, res) => {
       try {
-        const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+        const updates = { ...req.body };
+        if (path === "appointments") {
+          delete updates.payment_status;
+          delete updates.payment_method;
+          delete updates.payment_reference;
+          delete updates.consultation_fee;
+        }
+        const doc = await Model.findByIdAndUpdate(req.params.id, updates, {
           new: true,
           runValidators: true,
         });

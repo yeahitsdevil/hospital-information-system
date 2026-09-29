@@ -3,16 +3,13 @@ import {
   Users,
   Stethoscope,
   CalendarDays,
+  FileText,
   Pill,
   FlaskConical,
   BedDouble,
   Receipt,
-  LogOut,
-  Menu,
-  X,
-  Search,
-  Bell,
-  Activity,
+  UserCheck,
+  UserCircle,
 } from "lucide-react";
 
 const navItems = [
@@ -24,6 +21,28 @@ const navItems = [
     "pharmacist",
     "lab",
     "accountant",
+    "patient",
+  ]],
+
+  ["/appointments", "Appointments", CalendarDays, [
+    "admin",
+    "doctor",
+    "nurse",
+    "receptionist",
+    "accountant",
+    "patient",
+  ]],
+
+  ["/prescriptions", "Prescriptions", FileText, ["admin", "doctor", "nurse", "receptionist", "lab", "pharmacist", "patient"]],
+
+  ["/doctors", "Doctors & Specialists", Stethoscope, [
+    "admin",
+    "doctor",
+    "nurse",
+    "receptionist",
+    "pharmacist",
+    "accountant",
+    "patient",
   ]],
 
   ["/patients", "Patients", Users, [
@@ -34,29 +53,6 @@ const navItems = [
     "pharmacist",
     "lab",
     "accountant",
-  ]],
-
-  ["/doctors", "Doctors", Stethoscope, [
-    "admin",
-    "doctor",
-    "nurse",
-    "receptionist",
-    "pharmacist",
-    "accountant",
-  ]],
-
-  ["/appointments", "Appointments", CalendarDays, [
-    "admin",
-    "doctor",
-    "nurse",
-    "receptionist",
-  ]],
-
-  ["/prescriptions", "Prescriptions", Activity, [
-    "admin",
-    "doctor",
-    "nurse",
-    "pharmacist",
   ]],
 
   ["/medicines", "Pharmacy", Pill, [
@@ -71,19 +67,40 @@ const navItems = [
     "doctor",
     "nurse",
     "lab",
+    "receptionist",
+    "patient",
   ]],
 
-  ["/beds", "Beds & Wards", BedDouble, [
+  ["/beds", "Inpatient & Wards", BedDouble, [
     "admin",
     "doctor",
     "nurse",
     "receptionist",
   ]],
 
-  ["/bills", "Billing", Receipt, [
+  ["/bills", "Billing & Invoices", Receipt, [
     "admin",
     "receptionist",
     "accountant",
+    "patient",
+  ]],
+
+  ["/staff", "Staff & Workload", UserCheck, [
+    "admin",
+    "doctor",
+    "nurse",
+    "accountant",
+  ]],
+
+  ["/profile", "My Profile", UserCircle, [
+    "admin",
+    "doctor",
+    "nurse",
+    "receptionist",
+    "pharmacist",
+    "lab",
+    "accountant",
+    "patient",
   ]],
 ];
 
