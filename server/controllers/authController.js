@@ -5,7 +5,9 @@ import { User, Patient, Doctor } from "../models/index.js";
 export const register = async (req, res) => {
   try {
     if (!process.env.JWT_SECRET) {
-      return res.status(500).json({ message: "Authentication is not configured on the server" });
+      return res
+        .status(500)
+        .json({ message: "Authentication is not configured on the server" });
     }
     const {
       name,
@@ -21,35 +23,73 @@ export const register = async (req, res) => {
       allergies,
     } = req.body;
 
-    if (typeof name !== "string" || !name.trim() || typeof email !== "string" || !email.trim() || typeof password !== "string") {
-      return res.status(400).json({ message: "Name, email, and password are required" });
+    if (
+      typeof name !== "string" ||
+      !name.trim() ||
+      typeof email !== "string" ||
+      !email.trim() ||
+      typeof password !== "string"
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Name, email, and password are required" });
     }
-    if (name.trim().length > 100) return res.status(400).json({ message: "Name must be 100 characters or fewer" });
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return res.status(400).json({ message: "Enter a valid email address" });
-    if (phone && !/^\d{10}$/.test(phone)) return res.status(400).json({ message: "Phone number must contain exactly 10 digits" });
-    if (emergency_contact && !/^\d{10}$/.test(emergency_contact)) return res.status(400).json({ message: "Emergency contact must contain exactly 10 digits" });
+    if (name.trim().length > 100)
+      return res
+        .status(400)
+        .json({ message: "Name must be 100 characters or fewer" });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+      return res.status(400).json({ message: "Enter a valid email address" });
+    if (phone && !/^\d{10}$/.test(phone))
+      return res
+        .status(400)
+        .json({ message: "Phone number must contain exactly 10 digits" });
+    if (emergency_contact && !/^\d{10}$/.test(emergency_contact))
+      return res
+        .status(400)
+        .json({ message: "Emergency contact must contain exactly 10 digits" });
 
     // Public sign-up creates patient accounts only. Staff accounts are provisioned
     // by an administrator so a registrant cannot grant themselves clinical access.
     if (role && role !== "patient") {
-      return res.status(403).json({ message: "Staff accounts must be created by a hospital administrator" });
+      return res
+        .status(403)
+        .json({
+          message: "Staff accounts must be created by a hospital administrator",
+        });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters long" });
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters long" });
     }
     if (dob) {
       const parsedDob = new Date(`${dob}T00:00:00.000Z`);
       const today = new Date();
       const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(dob) || Number.isNaN(parsedDob.getTime()) || parsedDob.toISOString().slice(0, 10) !== dob || dob > todayString) {
-        return res.status(400).json({ message: "Date of birth must be a valid date that is not in the future" });
+      if (
+        !/^\d{4}-\d{2}-\d{2}$/.test(dob) ||
+        Number.isNaN(parsedDob.getTime()) ||
+        parsedDob.toISOString().slice(0, 10) !== dob ||
+        dob > todayString
+      ) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "Date of birth must be a valid date that is not in the future",
+          });
       }
     }
 
-    const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
+    const existingUser = await User.findOne({
+      email: email.toLowerCase().trim(),
+    });
     if (existingUser) {
-      return res.status(409).json({ message: "An account with this email already exists" });
+      return res
+        .status(409)
+        .json({ message: "An account with this email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -106,7 +146,7 @@ export const register = async (req, res) => {
         emp_id: user.emp_id,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "8h" }
+      { expiresIn: "8h" },
     );
 
     res.status(201).json({
@@ -134,11 +174,18 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     if (!process.env.JWT_SECRET) {
-      return res.status(500).json({ message: "Authentication is not configured on the server" });
+      return res
+        .status(500)
+        .json({ message: "Authentication is not configured on the server" });
     }
-    const email = typeof req.body.email === "string" ? req.body.email.toLowerCase().trim() : "";
+    const email =
+      typeof req.body.email === "string"
+        ? req.body.email.toLowerCase().trim()
+        : "";
     if (!email || typeof req.body.password !== "string" || !req.body.password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
     const u = await User.findOne({ email });
 
@@ -154,7 +201,9 @@ export const login = async (req, res) => {
 
     // Auto-link Patient or Doctor if missing
     if (u.role === "patient" && !u.patient_id) {
-      let patient = await Patient.findOne({ $or: [{ email: u.email }, { user_id: u._id }] });
+      let patient = await Patient.findOne({
+        $or: [{ email: u.email }, { user_id: u._id }],
+      });
       if (!patient) {
         const count = await Patient.countDocuments();
         const patient_id = `PAT-${String(count + 1001).padStart(4, "0")}`;
@@ -194,7 +243,7 @@ export const login = async (req, res) => {
         emp_id: u.emp_id,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "8h" }
+      { expiresIn: "8h" },
     );
 
     res.json({

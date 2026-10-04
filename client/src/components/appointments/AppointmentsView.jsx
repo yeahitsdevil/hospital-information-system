@@ -161,7 +161,7 @@ export default function AppointmentsView() {
       <div className="module-header">
         <div>
           <h2>
-            {isPatient ? "My Consultations & Appointments" : "Appointment Scheduling & Doctor Slots (DFD 3.0)"}
+            {isPatient ? "My Consultations & Appointments" : "Appointment Scheduling & Doctor Slots"}
           </h2>
           <p className="sub-text">
             {isPatient
@@ -220,7 +220,7 @@ export default function AppointmentsView() {
                   <button
                     type="button"
                     className="action-btn-sm"
-                    title="Print Confirmation Slip (DFD Page 9)"
+                    title="Print Confirmation Slip"
                     onClick={() => handlePrintSlip(a._id)}
                   >
                     <Printer size={15} /> Slip
@@ -248,7 +248,7 @@ export default function AppointmentsView() {
         <div className="modal">
           <form className="modal-card" onSubmit={handleBookAppointment}>
             <div className="modal-head">
-              <h2>{isPatient ? "Book Your Doctor Consultation" : "Book Consultation Slot (DFD 3.0)"}</h2>
+              <h2>{isPatient ? "Book Your Doctor Consultation" : "Book Consultation Slot "}</h2>
               <button type="button" className="close-btn" onClick={() => setShowModal(false)}>×</button>
             </div>
 
@@ -325,7 +325,7 @@ export default function AppointmentsView() {
             )}
 
             <label>
-              Appointment Date (Trigger 7: No Past Dates)
+              Appointment Date (No Past Dates)
               <input
                 type="date"
                 min={todayLocal()}
@@ -338,7 +338,7 @@ export default function AppointmentsView() {
             {/* Doctor Daily Quota Info (Trigger 9) */}
             {availability && isDoctorAvailable && (
               <div className="quota-indicator">
-                <strong>Doctor Daily Quota (Trigger 9):</strong> {availability.totalBooked} / {availability.maxAllowed} booked on this date.
+                <strong>Doctor Daily Quota:</strong> {availability.totalBooked} / {availability.maxAllowed} booked on this date.
                 {availability.totalBooked >= 20 && (
                   <span className="text-danger"> Limit reached for this doctor on this day.</span>
                 )}
@@ -347,7 +347,7 @@ export default function AppointmentsView() {
 
             {/* 30-Minute Time Slot Picker */}
             <label>
-              Select 30-Min Time Slot (Trigger 8: Conflict Prevention)
+              Select 30-Min Time Slot (Conflict Prevention)
               <div className="slots-grid">
                 {availability?.slots?.map((slot) => (
                   <button

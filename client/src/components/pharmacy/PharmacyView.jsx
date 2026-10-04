@@ -150,7 +150,7 @@ export default function PharmacyView() {
         <div>
           <h2>Pharmacy Inventory & Digital Prescriptions (DFD 5.0 & 7.0)</h2>
           <p className="sub-text">
-            Drug catalog with batch & expiry tracking, automatic expired medicine blocking (Trigger 11), and real-time inventory deduction with billing (Triggers 12 & 13).
+            Drug catalog with batch & expiry tracking, automatic expired medicine blocking , and real-time inventory deduction with billing .
           </p>
         </div>
         <div style={{ display: "flex", gap: "10px" }}>
@@ -342,7 +342,7 @@ export default function PharmacyView() {
               </label>
 
               <label>
-                Expiry Date (Trigger 11: Safety Check)
+                Expiry Date:
                 <input
                   type="date"
                   required

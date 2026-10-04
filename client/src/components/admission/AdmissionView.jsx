@@ -124,9 +124,9 @@ export default function AdmissionView() {
     <div className="module-container">
       <div className="module-header">
         <div>
-          <h2>Bed & Ward Management / Inpatient Care (DFD 8.0 & 11)</h2>
+          <h2>Bed & Ward Management / Inpatient Care </h2>
           <p className="sub-text">
-            Real-time room occupancy, doctor admission authorization, automated nurse workload balancing (Trigger 21), and stay billing.
+            Real-time room occupancy, doctor admission authorization, automated nurse workload balancing , and stay billing.
           </p>
         </div>
         <button className="btn-primary" onClick={() => setShowAdmitModal(true)}>
@@ -238,12 +238,12 @@ export default function AdmissionView() {
         <div className="modal">
           <form className="modal-card" onSubmit={handleAdmit}>
             <div className="modal-head">
-              <h2>Doctor Admission Order (DFD 11)</h2>
+              <h2>Doctor Admission Order</h2>
               <button type="button" className="close-btn" onClick={() => setShowAdmitModal(false)}>×</button>
             </div>
 
             <label>
-              Select Patient (Trigger 16: Single Active Admission Enforced)
+              Select Patient
               <select
                 value={selectedPatient}
                 onChange={(e) => setSelectedPatient(e.target.value)}
@@ -258,7 +258,7 @@ export default function AdmissionView() {
             </label>
 
             <label>
-              Select Room / Bed (Trigger 17: Must be 'Available')
+              Select Room / Bed (Must be 'Available')
               <select
                 value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
@@ -290,7 +290,7 @@ export default function AdmissionView() {
             <div className="nurse-auto-info-box">
               <UserCheck size={16} />
               <span>
-                <strong>Smart Workload Balancing (Trigger 21):</strong> An active nursing officer with the lowest current inpatient load will be automatically assigned.
+                <strong>Smart Workload Balancing :</strong> An active nursing officer with the lowest current inpatient load will be automatically assigned.
               </span>
             </div>
 
@@ -317,7 +317,7 @@ export default function AdmissionView() {
         <div className="modal">
           <form className="modal-card" onSubmit={handleDischarge}>
             <div className="modal-head">
-              <h2>Discharge Process Initiation (DFD 11)</h2>
+              <h2>Discharge Process Initiation </h2>
               <button type="button" className="close-btn" onClick={() => setShowDischargeModal(false)}>×</button>
             </div>
 
@@ -325,7 +325,7 @@ export default function AdmissionView() {
               <p><strong>Patient:</strong> {selectedAdmission.patient_id?.name || "Patient"}</p>
               <p><strong>Allocated Room:</strong> {selectedAdmission.room_id?.room_number} ({selectedAdmission.room_id?.room_type})</p>
               <p><strong>Admitted Date:</strong> {new Date(selectedAdmission.admission_date).toLocaleString()}</p>
-              <p><strong>Trigger 23 Automatic Action:</strong> Room will be freed, nurse assignment deactivated, and length-of-stay charges will be auto-calculated into patient's master invoice.</p>
+              <p><strong>Automatic Action:</strong> Room will be freed, nurse assignment deactivated, and length-of-stay charges will be auto-calculated into patient's master invoice.</p>
             </div>
 
             <label>

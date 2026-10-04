@@ -37,7 +37,9 @@ function ProtectedRoute({ path, user, children }) {
 
 function AppRoutes() {
   const [token, setToken] = useState(() => localStorage.getItem("his_token"));
-  const [checkingAuth, setCheckingAuth] = useState(() => Boolean(localStorage.getItem("his_token")));
+  const [checkingAuth, setCheckingAuth] = useState(() =>
+    Boolean(localStorage.getItem("his_token")),
+  );
 
   const [user, setUser] = useState(() => {
     try {
@@ -83,7 +85,8 @@ function AppRoutes() {
     setUser({});
   };
 
-  if (checkingAuth) return <div className="loading-screen">Checking your sign-in…</div>;
+  if (checkingAuth)
+    return <div className="loading-screen">Checking your sign-in…</div>;
 
   if (!token) {
     return (
@@ -125,7 +128,14 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route path="/prescriptions" element={<ProtectedRoute path="/prescriptions" user={user}><PrescriptionsView /></ProtectedRoute>} />
+        <Route
+          path="/prescriptions"
+          element={
+            <ProtectedRoute path="/prescriptions" user={user}>
+              <PrescriptionsView />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/medicines"
           element={
@@ -178,7 +188,18 @@ function AppRoutes() {
         />
 
         {Object.keys(configs).map((k) => {
-          if (["patients", "appointments", "prescriptions", "medicines", "lab-tests", "beds", "bills", "doctors"].includes(k)) {
+          if (
+            [
+              "patients",
+              "appointments",
+              "prescriptions",
+              "medicines",
+              "lab-tests",
+              "beds",
+              "bills",
+              "doctors",
+            ].includes(k)
+          ) {
             return null;
           }
           return (

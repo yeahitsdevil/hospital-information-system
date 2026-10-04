@@ -38,7 +38,8 @@ export const getPatients = async (req, res) => {
 export const createPatient = async (req, res) => {
   try {
     const count = await Patient.countDocuments();
-    const patient_id = req.body.patient_id || `PAT-${String(count + 1001).padStart(4, "0")}`;
+    const patient_id =
+      req.body.patient_id || `PAT-${String(count + 1001).padStart(4, "0")}`;
 
     const newPatient = await Patient.create({
       ...req.body,
@@ -53,7 +54,10 @@ export const createPatient = async (req, res) => {
       await MedicalHistory.create({
         history_id: `HIST-${String(histCount + 1001).padStart(4, "0")}`,
         patient_id: newPatient._id,
-        condition_md: req.body.condition_md || req.body.history || "Initial registration notes",
+        condition_md:
+          req.body.condition_md ||
+          req.body.history ||
+          "Initial registration notes",
         diagnosis_date: new Date(),
         notes: req.body.notes || "Recorded upon registration",
       });
@@ -71,13 +75,22 @@ export const getPatientById = async (req, res) => {
     if (!patient) return res.status(404).json({ message: "Patient not found" });
 
     // Fetch longitudinal history, appointments, prescriptions, admissions, bills
-    const [history, appointments, prescriptions, admissions, bills] = await Promise.all([
-      MedicalHistory.find({ patient_id: patient._id }).sort({ diagnosis_date: -1 }),
-      Appointment.find({ patient_id: patient._id }).populate("doctor_emp_id").sort({ appointment_date: -1 }),
-      Prescription.find({ patient_id: patient._id }).populate("doctor_emp_id").sort({ prescription_date: -1 }),
-      Admission.find({ patient_id: patient._id }).populate("room_id doctor_emp_id assigned_nurse").sort({ admission_date: -1 }),
-      Bill.find({ patient_id: patient._id }).sort({ bill_date: -1 }),
-    ]);
+    const [history, appointments, prescriptions, admissions, bills] =
+      await Promise.all([
+        MedicalHistory.find({ patient_id: patient._id }).sort({
+          diagnosis_date: -1,
+        }),
+        Appointment.find({ patient_id: patient._id })
+          .populate("doctor_emp_id")
+          .sort({ appointment_date: -1 }),
+        Prescription.find({ patient_id: patient._id })
+          .populate("doctor_emp_id")
+          .sort({ prescription_date: -1 }),
+        Admission.find({ patient_id: patient._id })
+          .populate("room_id doctor_emp_id assigned_nurse")
+          .sort({ admission_date: -1 }),
+        Bill.find({ patient_id: patient._id }).sort({ bill_date: -1 }),
+      ]);
 
     res.json({
       patient,
@@ -119,17 +132,23 @@ export const getPatientReport = async (req, res) => {
     const patient = await Patient.findById(req.params.id);
     if (!patient) return res.status(404).json({ message: "Patient not found" });
 
-    const [history, appointments, prescriptions, admissions, bills] = await Promise.all([
-      MedicalHistory.find({ patient_id: patient._id }),
-      Appointment.find({ patient_id: patient._id }).populate("doctor_emp_id"),
-      Prescription.find({ patient_id: patient._id }).populate("doctor_emp_id"),
-      Admission.find({ patient_id: patient._id }).populate("room_id doctor_emp_id assigned_nurse"),
-      Bill.find({ patient_id: patient._id }),
-    ]);
+    const [history, appointments, prescriptions, admissions, bills] =
+      await Promise.all([
+        MedicalHistory.find({ patient_id: patient._id }),
+        Appointment.find({ patient_id: patient._id }).populate("doctor_emp_id"),
+        Prescription.find({ patient_id: patient._id }).populate(
+          "doctor_emp_id",
+        ),
+        Admission.find({ patient_id: patient._id }).populate(
+          "room_id doctor_emp_id assigned_nurse",
+        ),
+        Bill.find({ patient_id: patient._id }),
+      ]);
 
     res.json({
       reportTitle: "HOSPITAL INFORMATION SYSTEM - PATIENT CLINICAL SUMMARY",
-      institution: "Maulana Azad National Institute of Technology (MANIT) Bhopal",
+      institution:
+        "Maulana Azad National Institute of Technology (MANIT) Bhopal",
       generatedAt: new Date(),
       patient,
       clinicalData: {

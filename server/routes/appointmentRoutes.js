@@ -10,10 +10,30 @@ import {
 
 const router = express.Router();
 
-router.get("/", auth, roles("admin", "doctor", "nurse", "receptionist", "accountant", "patient"), getAppointments);
-router.post("/", auth, roles("admin", "receptionist", "patient"), createAppointment);
-router.post("/:id/cash-payment", auth, roles("admin", "receptionist", "accountant"), collectCashPayment);
+router.get(
+  "/",
+  auth,
+  roles("admin", "doctor", "nurse", "receptionist", "accountant", "patient"),
+  getAppointments,
+);
+router.post(
+  "/",
+  auth,
+  roles("admin", "receptionist", "patient"),
+  createAppointment,
+);
+router.post(
+  "/:id/cash-payment",
+  auth,
+  roles("admin", "receptionist", "accountant"),
+  collectCashPayment,
+);
 router.get("/doctor/:doctorId/availability", auth, getDoctorAvailability);
-router.get("/:id/slip", auth, roles("admin", "doctor", "nurse", "receptionist", "accountant", "patient"), getAppointmentSlip);
+router.get(
+  "/:id/slip",
+  auth,
+  roles("admin", "doctor", "nurse", "receptionist", "accountant", "patient"),
+  getAppointmentSlip,
+);
 
 export default router;

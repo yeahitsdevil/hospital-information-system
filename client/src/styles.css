@@ -777,8 +777,8 @@ tbody tr:last-child td {
 
 .notification-button {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: 48px;
+  height: 48px;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -2979,4 +2979,4 @@ html[data-theme="dark"] .manit-seal {
   font-size: 14px;
   font-weight: 700;
 }
-
+

@@ -4,11 +4,6 @@ import { getAlerts } from "../controllers/alertController.js";
 
 const router = express.Router();
 
-router.get(
-  "/",
-  auth,
-  permission(["admin", "pharmacist"]),
-  getAlerts,
-);
+router.get("/", auth, permission(["admin", "pharmacist"]), getAlerts);
 
 export default router;

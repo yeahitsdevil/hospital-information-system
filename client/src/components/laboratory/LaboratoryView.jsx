@@ -81,7 +81,7 @@ export default function LaboratoryView() {
         body: JSON.stringify(payload),
       });
 
-      setSuccess(`Lab Test order ${result.test_id} created! Test fee ₹${result.charge_amount} auto-added to active bill (Trigger 15).`);
+      setSuccess(`Lab Test order ${result.test_id} created! Test fee ₹${result.charge_amount} auto-added to active bill`);
       setShowOrderModal(false);
       setOrderNotes("");
       loadData();
@@ -134,9 +134,9 @@ export default function LaboratoryView() {
     <div className="module-container">
       <div className="module-header">
         <div>
-          <h2>Laboratory Management & Diagnostic Reports (DFD 6.0 & 10)</h2>
+          <h2>Laboratory Management & Diagnostic Reports </h2>
           <p className="sub-text">
-            Test types catalog with standard pricing, doctor test requisitions, lab technician result submission (Trigger 14), and auto-billing (Trigger 15).
+            Test types catalog with standard pricing, doctor test requisitions, lab technician result submission , and auto-billing.
           </p>
         </div>
         {isDoctor && <button className="btn-primary" onClick={() => setShowOrderModal(true)}>
@@ -230,7 +230,7 @@ export default function LaboratoryView() {
         <div className="modal">
           <form className="modal-card" onSubmit={handleOrderTest}>
             <div className="modal-head">
-              <h2>Requisition Lab Test (DFD 6.0)</h2>
+              <h2>Requisition Lab Test</h2>
               <button type="button" className="close-btn" onClick={() => setShowOrderModal(false)}>×</button>
             </div>
 
@@ -279,7 +279,7 @@ export default function LaboratoryView() {
 
             <div className="modal-actions">
               <button type="button" className="btn-secondary" onClick={() => setShowOrderModal(false)}>Cancel</button>
-              <button type="submit" className="btn-primary">Order Test & Auto-Bill (Trigger 15)</button>
+              <button type="submit" className="btn-primary">Order Test & Auto-Bill</button>
             </div>
           </form>
         </div>
@@ -290,7 +290,7 @@ export default function LaboratoryView() {
         <div className="modal">
           <form className="modal-card" onSubmit={handleSubmitResult}>
             <div className="modal-head">
-              <h2>Submit Laboratory Findings (DFD 10)</h2>
+              <h2>Submit Laboratory Findings </h2>
               <button type="button" className="close-btn" onClick={() => setShowResultModal(false)}>×</button>
             </div>
 

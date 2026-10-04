@@ -1,4 +1,10 @@
-import { Appointment, Doctor, Patient, AppointmentCharge, Bill } from "../models/index.js";
+import {
+  Appointment,
+  Doctor,
+  Patient,
+  AppointmentCharge,
+  Bill,
+} from "../models/index.js";
 import { TriggerEngine } from "../services/triggerEngine.js";
 
 // Standard 30-minute consultation slots (09:00 to 17:00)
@@ -37,13 +43,19 @@ export const getAppointments = async (req, res) => {
       }
 
       if (patientDoc) {
-        filter.$or = [{ patient_id: patientDoc._id }, { patient: patientDoc._id }];
+        filter.$or = [
+          { patient_id: patientDoc._id },
+          { patient: patientDoc._id },
+        ];
       } else {
         return res.json([]);
       }
     } else if (req.user?.role === "doctor") {
       if (!req.user.emp_id) return res.json([]);
-      filter.$or = [{ doctor_emp_id: req.user.emp_id }, { doctor: req.user.emp_id }];
+      filter.$or = [
+        { doctor_emp_id: req.user.emp_id },
+        { doctor: req.user.emp_id },
+      ];
     } else {
       if (doctor) filter.doctor_emp_id = doctor;
       if (patient) filter.patient_id = patient;
@@ -108,13 +120,22 @@ export const getDoctorAvailability = async (req, res) => {
     const booked = await Appointment.find({
       $and: [
         { $or: [{ doctor_emp_id: doctorId }, { doctor: doctorId }] },
-        { $or: [
-          { appointment_date: { $gte: startOfDay, $lte: endOfDay } },
-          { $and: [
-            { $or: [{ appointment_date: { $exists: false } }, { appointment_date: null }] },
-            { date: { $gte: startOfDay, $lte: endOfDay } },
-          ] },
-        ] },
+        {
+          $or: [
+            { appointment_date: { $gte: startOfDay, $lte: endOfDay } },
+            {
+              $and: [
+                {
+                  $or: [
+                    { appointment_date: { $exists: false } },
+                    { appointment_date: null },
+                  ],
+                },
+                { date: { $gte: startOfDay, $lte: endOfDay } },
+              ],
+            },
+          ],
+        },
         { status: { $ne: "cancelled" } },
       ],
     });
@@ -148,7 +169,20 @@ export const getDoctorAvailability = async (req, res) => {
 
 export const createAppointment = async (req, res) => {
   try {
-    let { patient_id, patient, doctor_emp_id, doctor, appointment_date, date, start_time, reason, payment_method, payment_reference, payment_confirmed, payment_amount } = req.body;
+    let {
+      patient_id,
+      patient,
+      doctor_emp_id,
+      doctor,
+      appointment_date,
+      date,
+      start_time,
+      reason,
+      payment_method,
+      payment_reference,
+      payment_confirmed,
+      payment_amount,
+    } = req.body;
 
     // If booking user is a patient, enforce their own patient profile
     if (req.user?.role === "patient") {
@@ -185,15 +219,29 @@ export const createAppointment = async (req, res) => {
     const actualDate = appointment_date || date;
     const slotStart = start_time || "10:00";
 
-    if (typeof actualDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(actualDate) || Number.isNaN(Date.parse(`${actualDate}T00:00:00.000Z`)) || new Date(`${actualDate}T00:00:00.000Z`).toISOString().slice(0, 10) !== actualDate) {
-      return res.status(400).json({ message: "Choose a valid appointment date" });
+    if (
+      typeof actualDate !== "string" ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(actualDate) ||
+      Number.isNaN(Date.parse(`${actualDate}T00:00:00.000Z`)) ||
+      new Date(`${actualDate}T00:00:00.000Z`).toISOString().slice(0, 10) !==
+        actualDate
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Choose a valid appointment date" });
     }
     if (!STANDARD_SLOTS.includes(slotStart)) {
-      return res.status(400).json({ message: "Choose one of the available 30-minute appointment slots" });
+      return res
+        .status(400)
+        .json({
+          message: "Choose one of the available 30-minute appointment slots",
+        });
     }
 
     if (!actualDoctorId) {
-      return res.status(400).json({ message: "Please select a consulting doctor" });
+      return res
+        .status(400)
+        .json({ message: "Please select a consulting doctor" });
     }
 
     // Verify doctor availability status
@@ -202,9 +250,14 @@ export const createAppointment = async (req, res) => {
       return res.status(404).json({ message: "Selected doctor not found" });
     }
 
-    const consultationFee = docRecord.consultation_fee ?? docRecord.consultationFee ?? 500;
+    const consultationFee =
+      docRecord.consultation_fee ?? docRecord.consultationFee ?? 500;
     const payingCashAtReception = payment_method === "Cash";
-    if (!["UPI", "Card", "Cash"].includes(payment_method) || Number(payment_amount) !== Number(consultationFee) || (!payingCashAtReception && payment_confirmed !== true)) {
+    if (
+      !["UPI", "Card", "Cash"].includes(payment_method) ||
+      Number(payment_amount) !== Number(consultationFee) ||
+      (!payingCashAtReception && payment_confirmed !== true)
+    ) {
       return res.status(402).json({
         message: `Pay the consultation fee of ₹${consultationFee} before confirming this appointment`,
         consultation_fee: consultationFee,
@@ -212,8 +265,15 @@ export const createAppointment = async (req, res) => {
     }
 
     // A doctor may only create bookings for their own schedule.
-    if (req.user?.role === "doctor" && String(req.user.emp_id) !== String(actualDoctorId)) {
-      return res.status(403).json({ message: "Doctors can only book appointments on their own schedule" });
+    if (
+      req.user?.role === "doctor" &&
+      String(req.user.emp_id) !== String(actualDoctorId)
+    ) {
+      return res
+        .status(403)
+        .json({
+          message: "Doctors can only book appointments on their own schedule",
+        });
     }
 
     if (docRecord.is_available === false) {
@@ -235,14 +295,19 @@ export const createAppointment = async (req, res) => {
     // RUN TRIGGERS 7, 8, 9
     try {
       TriggerEngine.validateAppointmentDate(actualDate, slotStart);
-      await TriggerEngine.checkDoctorScheduleOverlap(actualDoctorId, actualDate, slotStart);
+      await TriggerEngine.checkDoctorScheduleOverlap(
+        actualDoctorId,
+        actualDate,
+        slotStart,
+      );
       await TriggerEngine.checkDoctorDailyLimit(actualDoctorId, actualDate);
     } catch (error) {
       return res.status(409).json({ message: error.message });
     }
 
     const count = await Appointment.countDocuments();
-    const appointment_id = req.body.appointment_id || `APT-${String(count + 1001).padStart(4, "0")}`;
+    const appointment_id =
+      req.body.appointment_id || `APT-${String(count + 1001).padStart(4, "0")}`;
 
     const newAppointment = await Appointment.create({
       appointment_id,
@@ -259,7 +324,9 @@ export const createAppointment = async (req, res) => {
       consultation_fee: consultationFee,
       payment_status: payingCashAtReception ? "pending" : "paid",
       payment_method,
-      payment_reference: payingCashAtReception ? "" : (payment_reference || `DEMO-${Date.now()}`),
+      payment_reference: payingCashAtReception
+        ? ""
+        : payment_reference || `DEMO-${Date.now()}`,
     });
 
     // RUN TRIGGER 10: Automatically add consultation charge to patient bill
@@ -278,29 +345,61 @@ export const createAppointment = async (req, res) => {
 export const collectCashPayment = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id);
-    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
-    if (appointment.payment_status === "paid") return res.status(409).json({ message: "This appointment is already paid" });
-    if (appointment.payment_method !== "Cash") return res.status(400).json({ message: "Cash collection is only available for cash bookings" });
+    if (!appointment)
+      return res.status(404).json({ message: "Appointment not found" });
+    if (appointment.payment_status === "paid")
+      return res
+        .status(409)
+        .json({ message: "This appointment is already paid" });
+    if (appointment.payment_method !== "Cash")
+      return res
+        .status(400)
+        .json({
+          message: "Cash collection is only available for cash bookings",
+        });
 
-    const charge = await AppointmentCharge.findOne({ appointment_id: appointment._id });
-    if (!charge) return res.status(404).json({ message: "Appointment charge was not found" });
+    const charge = await AppointmentCharge.findOne({
+      appointment_id: appointment._id,
+    });
+    if (!charge)
+      return res
+        .status(404)
+        .json({ message: "Appointment charge was not found" });
     const amount = Number(req.body.amount);
-    if (!Number.isFinite(amount) || amount !== Number(charge.consultation_fee)) {
-      return res.status(400).json({ message: `Enter the exact consultation amount of ₹${charge.consultation_fee}` });
+    if (
+      !Number.isFinite(amount) ||
+      amount !== Number(charge.consultation_fee)
+    ) {
+      return res
+        .status(400)
+        .json({
+          message: `Enter the exact consultation amount of ₹${charge.consultation_fee}`,
+        });
     }
     const receiptNumber = String(req.body.receipt_number || "").trim();
-    if (!receiptNumber) return res.status(400).json({ message: "Cash receipt number is required" });
+    if (!receiptNumber)
+      return res
+        .status(400)
+        .json({ message: "Cash receipt number is required" });
 
     const bill = await Bill.findById(charge.bill_id);
-    if (!bill) return res.status(404).json({ message: "Patient invoice was not found" });
+    if (!bill)
+      return res.status(404).json({ message: "Patient invoice was not found" });
     const alreadyPaid = Number(bill.amount_paid || 0);
     const newPaidAmount = alreadyPaid + amount;
     if (newPaidAmount > Number(bill.total_amount || bill.total || 0)) {
-      return res.status(400).json({ message: "Cash amount exceeds the remaining balance on this invoice" });
+      return res
+        .status(400)
+        .json({
+          message: "Cash amount exceeds the remaining balance on this invoice",
+        });
     }
 
     bill.amount_paid = newPaidAmount;
-    bill.status = newPaidAmount >= Number(bill.total_amount || bill.total || 0) ? "paid" : "partial";
+    bill.status =
+      newPaidAmount >= Number(bill.total_amount || bill.total || 0)
+        ? "paid"
+        : "partial";
     bill.payment_method = "Cash";
     bill.paymentMethod = "Cash";
     if (bill.status === "paid") {
@@ -310,11 +409,20 @@ export const collectCashPayment = async (req, res) => {
     await bill.save();
 
     const paidAppointment = await Appointment.findOneAndUpdate(
-      { _id: appointment._id, payment_status: "pending", payment_method: "Cash" },
+      {
+        _id: appointment._id,
+        payment_status: "pending",
+        payment_method: "Cash",
+      },
       { $set: { payment_status: "paid", payment_reference: receiptNumber } },
       { new: true },
     );
-    if (!paidAppointment) return res.status(409).json({ message: "Cash payment was already recorded by another staff member" });
+    if (!paidAppointment)
+      return res
+        .status(409)
+        .json({
+          message: "Cash payment was already recorded by another staff member",
+        });
 
     res.json({
       message: `Cash payment of ₹${amount} recorded. Receipt ${receiptNumber}.`,
@@ -334,17 +442,35 @@ export const getAppointmentSlip = async (req, res) => {
       .populate("doctor_emp_id")
       .populate("doctor");
 
-    if (!appt) return res.status(404).json({ message: "Appointment not found" });
+    if (!appt)
+      return res.status(404).json({ message: "Appointment not found" });
 
-    if (req.user?.role === "doctor" && String(appt.doctor_emp_id?._id || appt.doctor_emp_id || appt.doctor?._id || appt.doctor) !== String(req.user.emp_id)) {
-      return res.status(403).json({ message: "You can only view slips for your appointments" });
+    if (
+      req.user?.role === "doctor" &&
+      String(
+        appt.doctor_emp_id?._id ||
+          appt.doctor_emp_id ||
+          appt.doctor?._id ||
+          appt.doctor,
+      ) !== String(req.user.emp_id)
+    ) {
+      return res
+        .status(403)
+        .json({ message: "You can only view slips for your appointments" });
     }
-    if (req.user?.role === "patient" && String(appt.patient_id?._id || appt.patient_id) !== String(req.user.patient_id)) {
-      return res.status(403).json({ message: "You can only view your own appointment slip" });
+    if (
+      req.user?.role === "patient" &&
+      String(appt.patient_id?._id || appt.patient_id) !==
+        String(req.user.patient_id)
+    ) {
+      return res
+        .status(403)
+        .json({ message: "You can only view your own appointment slip" });
     }
 
     res.json({
-      institution: "Maulana Azad National Institute of Technology (MANIT) Bhopal",
+      institution:
+        "Maulana Azad National Institute of Technology (MANIT) Bhopal",
       title: "APPOINTMENT CONFIRMATION SLIP",
       slipNo: `SLIP-${appt.appointment_id}`,
       appointmentDate: appt.appointment_date,
@@ -358,7 +484,8 @@ export const getAppointmentSlip = async (req, res) => {
       paymentStatus: appt.payment_status,
       paymentMethod: appt.payment_method,
       paymentReference: appt.payment_reference,
-      instructions: "Please report to the reception 15 minutes before your scheduled slot.",
+      instructions:
+        "Please report to the reception 15 minutes before your scheduled slot.",
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

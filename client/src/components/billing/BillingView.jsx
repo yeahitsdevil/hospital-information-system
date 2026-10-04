@@ -83,7 +83,7 @@ export default function BillingView() {
     <div className="module-container">
       <div className="module-header">
         <div>
-          <h2>Consolidated Billing & Healthcare Invoicing (DFD 9.0 & 12)</h2>
+          <h2>Consolidated Billing & Healthcare Invoicing</h2>
           <p className="sub-text">
             Auto-calculated master billing aggregating consultation, medication, lab tests, and room stay charges with official tax receipts.
           </p>
@@ -245,7 +245,7 @@ export default function BillingView() {
               </div>
 
               <div className="breakdown-grand-total">
-                <span>Grand Total (Triggers 24-35 Auto-Sum):</span>
+                <span>Grand Total:</span>
                 <span className="total-amount">₹{(billDetails.bill?.total_amount || 0).toLocaleString()}</span>
               </div>
             </div>
@@ -268,7 +268,7 @@ export default function BillingView() {
         <div className="modal">
           <form className="modal-card" onSubmit={handlePay}>
             <div className="modal-head">
-              <h2>Collect Healthcare Payment (DFD 12)</h2>
+              <h2>Collect Healthcare Payment</h2>
               <button type="button" className="close-btn" onClick={() => setShowPayModal(false)}>×</button>
             </div>
 

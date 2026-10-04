@@ -20,7 +20,6 @@ app.use(
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://[::1]:5173",
-        "https://hospital-information-system-client.onrender.com",
       ];
 
       if (!origin || allowedOrigins.includes(origin)) {

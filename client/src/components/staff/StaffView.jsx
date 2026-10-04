@@ -76,7 +76,7 @@ export default function StaffView() {
     <div className="module-container">
       <div className="module-header">
         <div>
-          <h2>Hierarchical Staff & Resource Allocation (DFD 1.0, 10.0 & Slide 2)</h2>
+          <h2>Hierarchical Staff & Resource Allocation</h2>
           <p className="sub-text">
             Employee superclass model with automatic role distribution (Doctor, Medical Staff, Admin) and dynamic nurse workload balancing.
           </p>
@@ -162,9 +162,9 @@ export default function StaffView() {
                 <span>Active Patient Assignments:</span>
                 <strong>{nw.activeAssignments} Inpatients</strong>
               </div>
-              <small style={{ color: "var(--text-muted)", marginTop: "10px", display: "block" }}>
-                Auto-assigned by Trigger 21 when new admissions arrive.
-              </small>
+              {/* <small style={{ color: "var(--text-muted)", marginTop: "10px", display: "block" }}>
+                
+              </small> */}
             </div>
           ))}
         </div>
@@ -228,7 +228,7 @@ export default function StaffView() {
               </label>
 
               <label>
-                Role (Trigger 4: Subclass Distribution)
+                Role
                 <select
                   value={empForm.role_name}
                   onChange={(e) => setEmpForm({ ...empForm, role_name: e.target.value })}
@@ -244,7 +244,7 @@ export default function StaffView() {
               </label>
 
               <label>
-                Department (Trigger 1: Match Validation)
+                Department
                 <select
                   value={empForm.department_name}
                   onChange={(e) => setEmpForm({ ...empForm, department_name: e.target.value })}
@@ -269,7 +269,7 @@ export default function StaffView() {
               </label>
 
               <label>
-                Hire Date (Trigger 3: Not in Future)
+                Hire Date
                 <input
                   type="date"
                   max={new Date().toISOString().split("T")[0]}

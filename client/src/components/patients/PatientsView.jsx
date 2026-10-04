@@ -143,7 +143,7 @@ export default function PatientsView() {
     <div className="module-container">
       <div className="module-header">
         <div>
-          <h2>Patient Administration & EMR Records (DFD 2.0)</h2>
+          <h2>Patient Administration & EMR Records</h2>
           <p className="sub-text">
             Unique digital health identifier, Outpatient (OPD) & Inpatient (IPD) lifecycle tracking, and longitudinal medical history.
           </p>
@@ -156,7 +156,7 @@ export default function PatientsView() {
       {error && <div className="alert-banner alert-danger">{error}</div>}
       {success && <div className="alert-banner alert-success">{success}</div>}
 
-      {/* TABS FOR OPD vs IPD (DFD Slide 7) */}
+      {/* TABS FOR OPD vs IPD  */}
       <div className="filter-tab-bar">
         <button className={`tab-btn ${activeTab === "ALL" ? "active" : ""}`} onClick={() => setActiveTab("ALL")}>
           All Patients ({patients.length})
@@ -216,7 +216,7 @@ export default function PatientsView() {
                     <button
                       type="button"
                       className="action-btn-sm"
-                      title="View EMR & Medical History (DFD Page 7)"
+                      title="View EMR & Medical History"
                       onClick={() => handleOpenHistory(p)}
                     >
                       <History size={14} /> EMR History
@@ -224,7 +224,7 @@ export default function PatientsView() {
                     <button
                       type="button"
                       className="action-btn-sm"
-                      title="Generate Full Patient Clinical Report (DFD 2.7)"
+                      title="Generate Full Patient Clinical Report"
                       onClick={() => handleGenerateReport(p._id)}
                     >
                       <FileText size={14} /> Report
@@ -247,7 +247,7 @@ export default function PatientsView() {
         <div className="modal">
           <form className="modal-card" onSubmit={handleRegisterPatient}>
             <div className="modal-head">
-              <h2>Register New Patient (DFD 1.1)</h2>
+              <h2>Register New Patient</h2>
               <button type="button" className="close-btn" onClick={() => setShowAddModal(false)}>×</button>
             </div>
 

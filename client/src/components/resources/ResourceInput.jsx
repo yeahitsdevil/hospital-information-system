@@ -1,11 +1,4 @@
-function ResourceInput({
-  type,
-  field,
-  form,
-  setForm,
-  patients,
-  doctors,
-}) {
+function ResourceInput({ type, field, form, setForm, patients, doctors }) {
   // PATIENT DROPDOWN
   if (field === "patient") {
     return (
@@ -49,9 +42,7 @@ function ResourceInput({
         {doctors.map((doctor) => (
           <option key={doctor._id} value={doctor._id}>
             {doctor.name}
-            {doctor.specialization
-              ? ` - ${doctor.specialization}`
-              : ""}
+            {doctor.specialization ? ` - ${doctor.specialization}` : ""}
           </option>
         ))}
       </select>

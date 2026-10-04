@@ -30,7 +30,8 @@ export const createEmployee = async (req, res) => {
     TriggerEngine.validateHireDate(hire_date);
 
     const count = await Employee.countDocuments();
-    const emp_id = req.body.emp_id || `EMP-${String(count + 1001).padStart(4, "0")}`;
+    const emp_id =
+      req.body.emp_id || `EMP-${String(count + 1001).padStart(4, "0")}`;
 
     const newEmp = await Employee.create({
       ...req.body,
@@ -49,7 +50,9 @@ export const createEmployee = async (req, res) => {
 
 export const getNursesWithWorkload = async (req, res) => {
   try {
-    const nurses = await MedicalStaff.find({ staff_type: "Nurse" }).populate("emp_id");
+    const nurses = await MedicalStaff.find({ staff_type: "Nurse" }).populate(
+      "emp_id",
+    );
 
     const nurseStats = await Promise.all(
       nurses.map(async (nurse) => {
@@ -60,9 +63,14 @@ export const getNursesWithWorkload = async (req, res) => {
         return {
           nurse,
           activeAssignments: activeCount,
-          workloadStatus: activeCount === 0 ? "Available" : activeCount <= 2 ? "Balanced" : "High",
+          workloadStatus:
+            activeCount === 0
+              ? "Available"
+              : activeCount <= 2
+                ? "Balanced"
+                : "High",
         };
-      })
+      }),
     );
 
     res.json(nurseStats);

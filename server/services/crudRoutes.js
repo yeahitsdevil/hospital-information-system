@@ -27,22 +27,37 @@ export const crud = (router, path, Model, populateFields = []) => {
         let query = Model.find();
 
         // Scope data for patient role so patients only see their records
-        if (req.user?.role === "patient" && ["appointments", "prescriptions", "lab-tests", "bills"].includes(path)) {
+        if (
+          req.user?.role === "patient" &&
+          ["appointments", "prescriptions", "lab-tests", "bills"].includes(path)
+        ) {
           let patientId = req.user.patient_id;
           if (!patientId) {
-            const p = await Patient.findOne({ $or: [{ user_id: req.user.id }, { email: req.user.email }] });
+            const p = await Patient.findOne({
+              $or: [{ user_id: req.user.id }, { email: req.user.email }],
+            });
             if (p) patientId = p._id;
           }
           if (patientId) {
-            query = query.where({ $or: [{ patient: patientId }, { patient_id: patientId }] });
+            query = query.where({
+              $or: [{ patient: patientId }, { patient_id: patientId }],
+            });
           } else {
             return res.json([]);
           }
         }
 
-        if (req.user?.role === "doctor" && ["appointments", "prescriptions", "lab-tests"].includes(path)) {
+        if (
+          req.user?.role === "doctor" &&
+          ["appointments", "prescriptions", "lab-tests"].includes(path)
+        ) {
           if (!req.user.emp_id) return res.json([]);
-          query = query.where({ $or: [{ doctor: req.user.emp_id }, { doctor_emp_id: req.user.emp_id }] });
+          query = query.where({
+            $or: [
+              { doctor: req.user.emp_id },
+              { doctor_emp_id: req.user.emp_id },
+            ],
+          });
         }
 
         // Populate only fields that actually exist
@@ -124,10 +139,7 @@ export const crud = (router, path, Model, populateFields = []) => {
         ) {
           const doctor = await Doctor.findOne({
             name: {
-              $regex: `^${body.doctor.replace(
-                /[.*+?^${}()|[\]\\]/g,
-                "\\$&",
-              )}$`,
+              $regex: `^${body.doctor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`,
               $options: "i",
             },
           });
@@ -180,16 +192,28 @@ export const crud = (router, path, Model, populateFields = []) => {
           });
         }
 
-        if (req.user?.role === "doctor" && ["appointments", "prescriptions", "lab-tests"].includes(path)) {
+        if (
+          req.user?.role === "doctor" &&
+          ["appointments", "prescriptions", "lab-tests"].includes(path)
+        ) {
           const ownerDoctor = d.doctor_emp_id || d.doctor;
           if (String(ownerDoctor) !== String(req.user.emp_id)) {
-            return res.status(403).json({ message: "You can only view records for your own patients" });
+            return res
+              .status(403)
+              .json({
+                message: "You can only view records for your own patients",
+              });
           }
         }
-        if (req.user?.role === "patient" && ["appointments", "prescriptions", "lab-tests", "bills"].includes(path)) {
+        if (
+          req.user?.role === "patient" &&
+          ["appointments", "prescriptions", "lab-tests", "bills"].includes(path)
+        ) {
           const ownPatient = d.patient_id || d.patient;
           if (String(ownPatient) !== String(req.user.patient_id)) {
-            return res.status(403).json({ message: "You can only view your own records" });
+            return res
+              .status(403)
+              .json({ message: "You can only view your own records" });
           }
         }
 

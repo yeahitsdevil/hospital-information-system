@@ -46,7 +46,15 @@ export default function Dashboard() {
       icon: Users,
       link: "/patients",
       color: "#1769e0",
-      roles: ["admin", "doctor", "nurse", "receptionist", "pharmacist", "lab", "accountant"],
+      roles: [
+        "admin",
+        "doctor",
+        "nurse",
+        "receptionist",
+        "pharmacist",
+        "lab",
+        "accountant",
+      ],
     },
     {
       id: "doctors",
@@ -56,13 +64,24 @@ export default function Dashboard() {
       icon: Stethoscope,
       link: "/doctors",
       color: "#059669",
-      roles: ["admin", "doctor", "nurse", "receptionist", "pharmacist", "accountant", "patient"],
+      roles: [
+        "admin",
+        "doctor",
+        "nurse",
+        "receptionist",
+        "pharmacist",
+        "accountant",
+        "patient",
+      ],
     },
     {
       id: "appointments",
       title: role === "patient" ? "My Appointments" : "Appointments Scheduled",
-      value: role === "patient" ? "View Active" : (d.appointments || 0),
-      sub: role === "patient" ? "Book 30-min consultation slots" : "30-minute consultation slots",
+      value: role === "patient" ? "View Active" : d.appointments || 0,
+      sub:
+        role === "patient"
+          ? "Book 30-min consultation slots"
+          : "30-minute consultation slots",
       icon: CalendarDays,
       link: "/appointments",
       color: "#d97706",
@@ -90,9 +109,18 @@ export default function Dashboard() {
     },
     {
       id: "bills",
-      title: role === "patient" ? "My Medical Invoices" : "Billed Healthcare Revenue",
-      value: role === "patient" ? "View Bills" : `₹${(d.revenue || 0).toLocaleString()}`,
-      sub: role === "patient" ? "Consultation & OPD receipts" : `${d.pendingBills || 0} Invoices pending payment`,
+      title:
+        role === "patient"
+          ? "My Medical Invoices"
+          : "Billed Healthcare Revenue",
+      value:
+        role === "patient"
+          ? "View Bills"
+          : `₹${(d.revenue || 0).toLocaleString()}`,
+      sub:
+        role === "patient"
+          ? "Consultation & OPD receipts"
+          : `${d.pendingBills || 0} Invoices pending payment`,
       icon: Receipt,
       link: "/bills",
       color: "#2563eb",
@@ -106,7 +134,16 @@ export default function Dashboard() {
       icon: UserCircle,
       link: "/profile",
       color: "#0891b2",
-      roles: ["admin", "doctor", "nurse", "receptionist", "pharmacist", "lab", "accountant", "patient"],
+      roles: [
+        "admin",
+        "doctor",
+        "nurse",
+        "receptionist",
+        "pharmacist",
+        "lab",
+        "accountant",
+        "patient",
+      ],
     },
   ];
 
@@ -117,7 +154,7 @@ export default function Dashboard() {
   const allPanels = [
     {
       id: "patient-appointment",
-      title: "Book Doctor Consultation (DFD 3.0)",
+      title: "Book Doctor Consultation ",
       desc: "Select a specialist doctor from available schedules and confirm your 30-minute consultation slot with automatic conflict prevention.",
       link: "/appointments",
       btnText: "Book Consultation Slot",
@@ -153,21 +190,38 @@ export default function Dashboard() {
       btnText: "Open My Profile",
       icon: UserCircle,
       color: "#0891b2",
-      roles: ["patient", "doctor", "nurse", "receptionist", "pharmacist", "lab", "accountant", "admin"],
+      roles: [
+        "patient",
+        "doctor",
+        "nurse",
+        "receptionist",
+        "pharmacist",
+        "lab",
+        "accountant",
+        "admin",
+      ],
     },
     {
       id: "patients-admin",
-      title: "Patient Administration (DFD 2.0)",
+      title: "Patient Administration",
       desc: "Register new patients, manage Outpatient (OPD) and Inpatient (IPD) clinical workflows, and record longitudinal medical histories.",
       link: "/patients",
       btnText: "Patient Records & EMR",
       icon: Users,
       color: "#1769e0",
-      roles: ["admin", "doctor", "nurse", "receptionist", "pharmacist", "lab", "accountant"],
+      roles: [
+        "admin",
+        "doctor",
+        "nurse",
+        "receptionist",
+        "pharmacist",
+        "lab",
+        "accountant",
+      ],
     },
     {
       id: "staff-appointments",
-      title: "Appointment Scheduling (DFD 3.0)",
+      title: "Appointment Scheduling",
       desc: "Book 30-minute consultation slots with automatic conflict detection, doctor daily quota (max 20/day), and printable slips.",
       link: "/appointments",
       btnText: "Consultation Slots & Slips",
@@ -177,8 +231,8 @@ export default function Dashboard() {
     },
     {
       id: "beds-module",
-      title: "Inpatient Care & Wards (DFD 8.0 & 11)",
-      desc: "Real-time room occupancy, ICU allocation, automated nurse workload balancing (Trigger 21), and stay duration billing on discharge.",
+      title: "Inpatient Care & Wards",
+      desc: "Real-time room occupancy, ICU allocation, automated nurse workload balancing, and stay duration billing on discharge.",
       link: "/beds",
       btnText: "Room Board & Admissions",
       icon: BedDouble,
@@ -187,7 +241,7 @@ export default function Dashboard() {
     },
     {
       id: "lab-module",
-      title: "Laboratory Services (DFD 6.0)",
+      title: "Laboratory Services",
       desc: "Order standard diagnostic tests (CBC, Lipid, LFT, X-Ray), submit lab findings with technician role verification, and auto-bill charges.",
       link: "/lab-tests",
       btnText: "Diagnostic Tests & Reports",
@@ -197,8 +251,8 @@ export default function Dashboard() {
     },
     {
       id: "pharmacy-module",
-      title: "Pharmacy & Prescriptions (DFD 5.0 & 7.0)",
-      desc: "Medicine inventory with batch and expiry tracking, automatic expired medicine blocking (Trigger 11), and real-time stock deduction.",
+      title: "Pharmacy & Prescriptions",
+      desc: "Medicine inventory with batch and expiry tracking, automatic expired medicine blocking, and real-time stock deduction.",
       link: "/medicines",
       btnText: "Pharmacy & Dispensing",
       icon: Pill,
@@ -207,7 +261,7 @@ export default function Dashboard() {
     },
     {
       id: "billing-module",
-      title: "Consolidated Billing (DFD 9.0 & 12)",
+      title: "Consolidated Billing ",
       desc: "Unified billing engine auto-aggregating consultation, pharmacy, laboratory, and room stay charges with official tax invoices.",
       link: "/bills",
       btnText: "Invoices & Payment Receipts",
@@ -217,7 +271,7 @@ export default function Dashboard() {
     },
     {
       id: "staff-module",
-      title: "Hierarchical Staff & Workload (Slide 2)",
+      title: "Hierarchical Staff & Workload ",
       desc: "Employee superclass model with automatic role distribution (Doctor, Medical Staff, Admin) and dynamic nurse workload balancing.",
       link: "/staff",
       btnText: "Staff Directory & Workload",
@@ -240,7 +294,9 @@ export default function Dashboard() {
         <div className="welcome-text-group">
           <h2>Welcome, {user.name || "User"}!</h2>
           <p>
-            Logged in as <strong className="role-tag">{role.toUpperCase()}</strong> • Hospital Information System
+            Logged in as{" "}
+            <strong className="role-tag">{role.toUpperCase()}</strong> •
+            Hospital Information System
           </p>
         </div>
         <div className="welcome-actions">
@@ -263,7 +319,10 @@ export default function Dashboard() {
             <Link to={c.link} className="kpi-card" key={i}>
               <div className="kpi-card-top">
                 <small>{c.title}</small>
-                <div className="kpi-icon-wrap" style={{ background: `${c.color}15`, color: c.color }}>
+                <div
+                  className="kpi-icon-wrap"
+                  style={{ background: `${c.color}15`, color: c.color }}
+                >
                   <Icon size={18} />
                 </div>
               </div>

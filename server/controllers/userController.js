@@ -1,5 +1,12 @@
 import bcrypt from "bcryptjs";
-import { User, Patient, Doctor, Employee, MedicalStaff, AdminStaff } from "../models/index.js";
+import {
+  User,
+  Patient,
+  Doctor,
+  Employee,
+  MedicalStaff,
+  AdminStaff,
+} from "../models/index.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -35,7 +42,10 @@ export const createUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const doctor = role === "doctor" ? await Doctor.findOne({ email: email.toLowerCase().trim() }) : null;
+    const doctor =
+      role === "doctor"
+        ? await Doctor.findOne({ email: email.toLowerCase().trim() })
+        : null;
     const user = await User.create({
       name,
       email,
@@ -162,7 +172,9 @@ export const getProfile = async (req, res) => {
         patient = await Patient.findById(user.patient_id);
       }
       if (!patient) {
-        patient = await Patient.findOne({ $or: [{ email: user.email }, { user_id: user._id }] });
+        patient = await Patient.findOne({
+          $or: [{ email: user.email }, { user_id: user._id }],
+        });
       }
       if (!patient) {
         const count = await Patient.countDocuments();
@@ -190,19 +202,34 @@ export const getProfile = async (req, res) => {
         doctor = await Doctor.findOne({ email: user.email });
       }
       if (!doctor) {
-        doctor = await Doctor.findOne({ name: { $regex: new RegExp(user.name.replace(/^Dr\.\s*/i, ""), "i") } });
+        doctor = await Doctor.findOne({
+          name: { $regex: new RegExp(user.name.replace(/^Dr\.\s*/i, ""), "i") },
+        });
       }
       roleDetails = doctor;
     } else if (["nurse", "pharmacist", "lab"].includes(user.role)) {
-      const staffType = user.role === "nurse" ? "Nurse" : user.role === "pharmacist" ? "Pharmacist" : "Lab Technician";
+      const staffType =
+        user.role === "nurse"
+          ? "Nurse"
+          : user.role === "pharmacist"
+            ? "Pharmacist"
+            : "Lab Technician";
       const staff = await MedicalStaff.findOne({
-        $or: [{ name: { $regex: new RegExp(user.name, "i") } }, { staff_type: staffType }]
+        $or: [
+          { name: { $regex: new RegExp(user.name, "i") } },
+          { staff_type: staffType },
+        ],
       });
       roleDetails = staff;
     } else if (["receptionist", "accountant", "admin"].includes(user.role)) {
-      const adminRole = user.role === "receptionist" ? "Receptionist" : user.role === "accountant" ? "Billing" : "Executive";
+      const adminRole =
+        user.role === "receptionist"
+          ? "Receptionist"
+          : user.role === "accountant"
+            ? "Billing"
+            : "Executive";
       const adminStaff = await AdminStaff.findOne({
-        $or: [{ email: user.email }, { admin_role: adminRole }]
+        $or: [{ email: user.email }, { admin_role: adminRole }],
       });
       roleDetails = adminStaff;
     }
@@ -269,7 +296,10 @@ export const updateProfile = async (req, res) => {
     if (user.role === "patient") {
       let patient = null;
       if (user.patient_id) patient = await Patient.findById(user.patient_id);
-      if (!patient) patient = await Patient.findOne({ $or: [{ email: user.email }, { user_id: user._id }] });
+      if (!patient)
+        patient = await Patient.findOne({
+          $or: [{ email: user.email }, { user_id: user._id }],
+        });
 
       if (patient) {
         if (name) patient.name = name.trim();
@@ -308,7 +338,8 @@ export const updateProfile = async (req, res) => {
         }
         if (availableDays) doctor.availableDays = availableDays;
         if (license_no !== undefined) doctor.license_no = license_no;
-        if (is_available !== undefined) doctor.is_available = Boolean(is_available);
+        if (is_available !== undefined)
+          doctor.is_available = Boolean(is_available);
         if (status_note !== undefined) doctor.status_note = status_note.trim();
         await doctor.save();
         updatedRoleDetails = doctor;
@@ -348,13 +379,19 @@ export const updateAvailability = async (req, res) => {
     // If user is a doctor, synchronize Doctor document
     if (user.role === "doctor") {
       await Doctor.updateMany(
-        { $or: [{ _id: user.emp_id }, { email: user.email }, { name: user.name }] },
+        {
+          $or: [
+            { _id: user.emp_id },
+            { email: user.email },
+            { name: user.name },
+          ],
+        },
         {
           $set: {
             is_available: user.is_available,
             status_note: user.status_note,
           },
-        }
+        },
       );
     }
 

@@ -35,7 +35,14 @@ export const getDashboard = async (req, res) => {
       Doctor.countDocuments(),
       Appointment.countDocuments({
         status: "scheduled",
-        ...(role === "doctor" ? { $or: [{ doctor_emp_id: req.user.emp_id }, { doctor: req.user.emp_id }] } : {}),
+        ...(role === "doctor"
+          ? {
+              $or: [
+                { doctor_emp_id: req.user.emp_id },
+                { doctor: req.user.emp_id },
+              ],
+            }
+          : {}),
         ...(role === "patient" ? { patient_id: req.user.patient_id } : {}),
       }),
       Room.countDocuments({ status: "available" }),
@@ -43,7 +50,10 @@ export const getDashboard = async (req, res) => {
       Room.countDocuments({ room_type: "ICU", status: "available" }),
       Medicine.countDocuments({
         $expr: {
-          $lte: ["$quantity", { $ifNull: ["$reorder_level", "$reorderLevel", 15] }],
+          $lte: [
+            "$quantity",
+            { $ifNull: ["$reorder_level", "$reorderLevel", 15] },
+          ],
         },
       }),
       Medicine.countDocuments({
@@ -84,15 +94,14 @@ export const getDashboard = async (req, res) => {
       revenue,
       pendingBills: pendingBillsCount,
       activeNurses: activeNursesCount,
-      institution: "Maulana Azad National Institute of Technology (MANIT) Bhopal",
+      institution:
+        "Maulana Azad National Institute of Technology (MANIT) Bhopal",
       mentors: ["Dr. Jay Kumar Jain", "Dr. Kuldeep Singh Yadav"],
       team: [
-        { name: "Ashutosh Sharma", roll: "25204031148" },
         { name: "Nikita Patidar", roll: "25204031132" },
-        { name: "Bhavishya Sisodiya", roll: "25204031140" },
         { name: "Akarshan Pathak", roll: "25204031107" },
         { name: "Sumit Sahai", roll: "25204031124" },
-        { name: "Nitish Kumar", roll: "25204031115" },
+        ,
       ],
     });
   } catch (error) {

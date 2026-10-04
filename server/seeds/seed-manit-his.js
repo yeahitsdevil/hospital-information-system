@@ -51,7 +51,8 @@ async function seedDatabase() {
     hospital = await Hospital.create({
       hospital_id: "HOSP-01",
       h_name: "MANIT Health Care & Research Hospital",
-      address: "Maulana Azad National Institute of Technology Campus, Link Road 3, Bhopal, MP 462003",
+      address:
+        "Maulana Azad National Institute of Technology Campus, Link Road 3, Bhopal, MP 462003",
       phone: "+91-755-4051000",
       email: "hospital@manit.ac.in",
     });
@@ -60,14 +61,46 @@ async function seedDatabase() {
 
   // 2. DEPARTMENTS
   const depts = [
-    { department_id: "DEP-01", dept_name: "Cardiology", description: "Heart & Vascular Care" },
-    { department_id: "DEP-02", dept_name: "Neurology", description: "Brain & Nervous System" },
-    { department_id: "DEP-03", dept_name: "General Medicine", description: "Primary & Internal Care" },
-    { department_id: "DEP-04", dept_name: "Orthopedics", description: "Bones & Joints" },
-    { department_id: "DEP-05", dept_name: "Emergency", description: "24/7 Critical Trauma Care" },
-    { department_id: "DEP-06", dept_name: "Laboratory", description: "Diagnostic Pathology" },
-    { department_id: "DEP-07", dept_name: "Pharmacy", description: "Dispensary & Pharmaceuticals" },
-    { department_id: "DEP-08", dept_name: "Administration", description: "Hospital Management & Billing" },
+    {
+      department_id: "DEP-01",
+      dept_name: "Cardiology",
+      description: "Heart & Vascular Care",
+    },
+    {
+      department_id: "DEP-02",
+      dept_name: "Neurology",
+      description: "Brain & Nervous System",
+    },
+    {
+      department_id: "DEP-03",
+      dept_name: "General Medicine",
+      description: "Primary & Internal Care",
+    },
+    {
+      department_id: "DEP-04",
+      dept_name: "Orthopedics",
+      description: "Bones & Joints",
+    },
+    {
+      department_id: "DEP-05",
+      dept_name: "Emergency",
+      description: "24/7 Critical Trauma Care",
+    },
+    {
+      department_id: "DEP-06",
+      dept_name: "Laboratory",
+      description: "Diagnostic Pathology",
+    },
+    {
+      department_id: "DEP-07",
+      dept_name: "Pharmacy",
+      description: "Dispensary & Pharmaceuticals",
+    },
+    {
+      department_id: "DEP-08",
+      dept_name: "Administration",
+      description: "Hospital Management & Billing",
+    },
   ];
 
   const deptMap = {};
@@ -101,12 +134,48 @@ async function seedDatabase() {
 
   // 4. TEST TYPES CATALOG
   const testTypes = [
-    { test_type_id: "TT-01", test_name: "Complete Blood Count (CBC)", price: 350, normal_range: "Hb: 12-16 g/dL, WBC: 4000-11000", category: "Hematology" },
-    { test_type_id: "TT-02", test_name: "Lipid Profile", price: 650, normal_range: "Cholesterol < 200 mg/dL", category: "Biochemistry" },
-    { test_type_id: "TT-03", test_name: "Liver Function Test (LFT)", price: 750, normal_range: "SGOT: 5-40 U/L, SGPT: 7-56 U/L", category: "Biochemistry" },
-    { test_type_id: "TT-04", test_name: "Kidney Function Test (KFT)", price: 700, normal_range: "Creatinine: 0.7-1.3 mg/dL", category: "Biochemistry" },
-    { test_type_id: "TT-05", test_name: "Chest X-Ray Digital", price: 500, normal_range: "Bilateral lung fields clear", category: "Radiology" },
-    { test_type_id: "TT-06", test_name: "ECG 12-Lead", price: 400, normal_range: "Normal sinus rhythm", category: "Cardiology" },
+    {
+      test_type_id: "TT-01",
+      test_name: "Complete Blood Count (CBC)",
+      price: 350,
+      normal_range: "Hb: 12-16 g/dL, WBC: 4000-11000",
+      category: "Hematology",
+    },
+    {
+      test_type_id: "TT-02",
+      test_name: "Lipid Profile",
+      price: 650,
+      normal_range: "Cholesterol < 200 mg/dL",
+      category: "Biochemistry",
+    },
+    {
+      test_type_id: "TT-03",
+      test_name: "Liver Function Test (LFT)",
+      price: 750,
+      normal_range: "SGOT: 5-40 U/L, SGPT: 7-56 U/L",
+      category: "Biochemistry",
+    },
+    {
+      test_type_id: "TT-04",
+      test_name: "Kidney Function Test (KFT)",
+      price: 700,
+      normal_range: "Creatinine: 0.7-1.3 mg/dL",
+      category: "Biochemistry",
+    },
+    {
+      test_type_id: "TT-05",
+      test_name: "Chest X-Ray Digital",
+      price: 500,
+      normal_range: "Bilateral lung fields clear",
+      category: "Radiology",
+    },
+    {
+      test_type_id: "TT-06",
+      test_name: "ECG 12-Lead",
+      price: 400,
+      normal_range: "Normal sinus rhythm",
+      category: "Cardiology",
+    },
   ];
 
   const testTypeMap = {};
@@ -120,12 +189,72 @@ async function seedDatabase() {
 
   // 5. MEDICINES
   const meds = [
-    { med_id: "MED-01", name: "Paracetamol 500mg", manufacturer: "Cipla", unit_price: 2.5, quantity: 150, reorder_level: 25, expiry_date: new Date("2027-12-31"), batch_no: "PCM-2026A", category: "Analgesic" },
-    { med_id: "MED-02", name: "Amoxicillin 500mg", manufacturer: "Sun Pharma", unit_price: 9.0, quantity: 45, reorder_level: 20, expiry_date: new Date("2027-06-30"), batch_no: "AMX-2026B", category: "Antibiotic" },
-    { med_id: "MED-03", name: "Metformin 500mg", manufacturer: "Dr. Reddy's", unit_price: 4.0, quantity: 80, reorder_level: 20, expiry_date: new Date("2027-09-30"), batch_no: "MET-2026C", category: "Antidiabetic" },
-    { med_id: "MED-04", name: "Atorvastatin 10mg", manufacturer: "Lupin", unit_price: 12.0, quantity: 60, reorder_level: 15, expiry_date: new Date("2027-11-30"), batch_no: "ATV-2026D", category: "Cardiovascular" },
-    { med_id: "MED-05", name: "Pantoprazole 40mg", manufacturer: "Alkem", unit_price: 6.5, quantity: 100, reorder_level: 30, expiry_date: new Date("2028-01-31"), batch_no: "PAN-2026E", category: "Gastrointestinal" },
-    { med_id: "MED-06", name: "Azithromycin 500mg", manufacturer: "Zydus", unit_price: 15.0, quantity: 10, reorder_level: 15, expiry_date: new Date("2027-05-15"), batch_no: "AZI-2026F", category: "Antibiotic" }, // low stock
+    {
+      med_id: "MED-01",
+      name: "Paracetamol 500mg",
+      manufacturer: "Cipla",
+      unit_price: 2.5,
+      quantity: 150,
+      reorder_level: 25,
+      expiry_date: new Date("2027-12-31"),
+      batch_no: "PCM-2026A",
+      category: "Analgesic",
+    },
+    {
+      med_id: "MED-02",
+      name: "Amoxicillin 500mg",
+      manufacturer: "Sun Pharma",
+      unit_price: 9.0,
+      quantity: 45,
+      reorder_level: 20,
+      expiry_date: new Date("2027-06-30"),
+      batch_no: "AMX-2026B",
+      category: "Antibiotic",
+    },
+    {
+      med_id: "MED-03",
+      name: "Metformin 500mg",
+      manufacturer: "Dr. Reddy's",
+      unit_price: 4.0,
+      quantity: 80,
+      reorder_level: 20,
+      expiry_date: new Date("2027-09-30"),
+      batch_no: "MET-2026C",
+      category: "Antidiabetic",
+    },
+    {
+      med_id: "MED-04",
+      name: "Atorvastatin 10mg",
+      manufacturer: "Lupin",
+      unit_price: 12.0,
+      quantity: 60,
+      reorder_level: 15,
+      expiry_date: new Date("2027-11-30"),
+      batch_no: "ATV-2026D",
+      category: "Cardiovascular",
+    },
+    {
+      med_id: "MED-05",
+      name: "Pantoprazole 40mg",
+      manufacturer: "Alkem",
+      unit_price: 6.5,
+      quantity: 100,
+      reorder_level: 30,
+      expiry_date: new Date("2028-01-31"),
+      batch_no: "PAN-2026E",
+      category: "Gastrointestinal",
+    },
+    {
+      med_id: "MED-06",
+      name: "Azithromycin 500mg",
+      manufacturer: "Zydus",
+      unit_price: 15.0,
+      quantity: 10,
+      reorder_level: 15,
+      expiry_date: new Date("2027-05-15"),
+      batch_no: "AZI-2026F",
+      category: "Antibiotic",
+    }, // low stock
   ];
 
   const medMap = {};
@@ -157,12 +286,48 @@ async function seedDatabase() {
 
   // 7. ROOMS & WARDS
   const rooms = [
-    { room_id: "RM-101", room_number: "G-101", room_type: "General Ward", daily_rate: 500, status: "available" },
-    { room_id: "RM-102", room_number: "G-102", room_type: "General Ward", daily_rate: 500, status: "available" },
-    { room_id: "RM-103", room_number: "G-103", room_type: "General Ward", daily_rate: 500, status: "available" },
-    { room_id: "RM-201", room_number: "ICU-01", room_type: "ICU", daily_rate: 2500, status: "available" },
-    { room_id: "RM-202", room_number: "ICU-02", room_type: "ICU", daily_rate: 2500, status: "available" },
-    { room_id: "RM-301", room_number: "SP-301", room_type: "Semi-Private", daily_rate: 1200, status: "available" },
+    {
+      room_id: "RM-101",
+      room_number: "G-101",
+      room_type: "General Ward",
+      daily_rate: 500,
+      status: "available",
+    },
+    {
+      room_id: "RM-102",
+      room_number: "G-102",
+      room_type: "General Ward",
+      daily_rate: 500,
+      status: "available",
+    },
+    {
+      room_id: "RM-103",
+      room_number: "G-103",
+      room_type: "General Ward",
+      daily_rate: 500,
+      status: "available",
+    },
+    {
+      room_id: "RM-201",
+      room_number: "ICU-01",
+      room_type: "ICU",
+      daily_rate: 2500,
+      status: "available",
+    },
+    {
+      room_id: "RM-202",
+      room_number: "ICU-02",
+      room_type: "ICU",
+      daily_rate: 2500,
+      status: "available",
+    },
+    {
+      room_id: "RM-301",
+      room_number: "SP-301",
+      room_type: "Semi-Private",
+      daily_rate: 1200,
+      status: "available",
+    },
   ];
 
   const roomMap = {};
@@ -182,23 +347,148 @@ async function seedDatabase() {
   // 8. EMPLOYEES & STAFF HIERARCHY
   const employees = [
     // Mentors & Senior Doctors
-    { emp_id: "EMP-1001", name: "Dr. Jay Kumar Jain", gender: "M", role_name: "Doctor", department_name: "Cardiology", salary: 180000, specialization: "Senior Interventional Cardiologist", license_no: "MP-MED-98210", consultation_fee: 1000, email: "jkjain@manit.ac.in" },
-    { emp_id: "EMP-1002", name: "Dr. Kuldeep Singh Yadav", gender: "M", role_name: "Doctor", department_name: "Neurology", salary: 175000, specialization: "Senior Consultant Neurologist", license_no: "MP-MED-98211", consultation_fee: 900, email: "ksyadav@manit.ac.in" },
-    { emp_id: "EMP-1003", name: "Dr. Ananya Sharma", gender: "F", role_name: "Doctor", department_name: "General Medicine", salary: 120000, specialization: "General Physician & Diabetologist", license_no: "MP-MED-98212", consultation_fee: 600, email: "ananya.sharma@his.local" },
-    { emp_id: "EMP-1004", name: "Dr. Rahul Verma", gender: "M", role_name: "Doctor", department_name: "Orthopedics", salary: 130000, specialization: "Orthopedic & Trauma Surgeon", license_no: "MP-MED-98213", consultation_fee: 700, email: "rahul.verma@his.local" },
+    {
+      emp_id: "EMP-1001",
+      name: "Dr. Jay Kumar Jain",
+      gender: "M",
+      role_name: "Doctor",
+      department_name: "Cardiology",
+      salary: 180000,
+      specialization: "Senior Interventional Cardiologist",
+      license_no: "MP-MED-98210",
+      consultation_fee: 1000,
+      email: "jkjain@manit.ac.in",
+    },
+    {
+      emp_id: "EMP-1002",
+      name: "Dr. Kuldeep Singh Yadav",
+      gender: "M",
+      role_name: "Doctor",
+      department_name: "Neurology",
+      salary: 175000,
+      specialization: "Senior Consultant Neurologist",
+      license_no: "MP-MED-98211",
+      consultation_fee: 900,
+      email: "ksyadav@manit.ac.in",
+    },
+    {
+      emp_id: "EMP-1003",
+      name: "Dr. Ananya Sharma",
+      gender: "F",
+      role_name: "Doctor",
+      department_name: "General Medicine",
+      salary: 120000,
+      specialization: "General Physician & Diabetologist",
+      license_no: "MP-MED-98212",
+      consultation_fee: 600,
+      email: "ananya.sharma@his.local",
+    },
+    {
+      emp_id: "EMP-1004",
+      name: "Dr. Rahul Verma",
+      gender: "M",
+      role_name: "Doctor",
+      department_name: "Orthopedics",
+      salary: 130000,
+      specialization: "Orthopedic & Trauma Surgeon",
+      license_no: "MP-MED-98213",
+      consultation_fee: 700,
+      email: "rahul.verma@his.local",
+    },
     // Nurses (for workload balancing)
-    { emp_id: "EMP-2001", name: "Nurse Sunita Rao", gender: "F", role_name: "Nurse", department_name: "Emergency", salary: 65000, staff_type: "Nurse", email: "sunita.rao@his.local" },
-    { emp_id: "EMP-2002", name: "Nurse Kavita Nair", gender: "F", role_name: "Nurse", department_name: "General Medicine", salary: 62000, staff_type: "Nurse", email: "kavita.nair@his.local" },
-    { emp_id: "EMP-2003", name: "Nurse Deepa Joseph", gender: "F", role_name: "Nurse", department_name: "Cardiology", salary: 64000, staff_type: "Nurse", email: "deepa.joseph@his.local" },
+    {
+      emp_id: "EMP-2001",
+      name: "Nurse Sunita Rao",
+      gender: "F",
+      role_name: "Nurse",
+      department_name: "Emergency",
+      salary: 65000,
+      staff_type: "Nurse",
+      email: "sunita.rao@his.local",
+    },
+    {
+      emp_id: "EMP-2002",
+      name: "Nurse Kavita Nair",
+      gender: "F",
+      role_name: "Nurse",
+      department_name: "General Medicine",
+      salary: 62000,
+      staff_type: "Nurse",
+      email: "kavita.nair@his.local",
+    },
+    {
+      emp_id: "EMP-2003",
+      name: "Nurse Deepa Joseph",
+      gender: "F",
+      role_name: "Nurse",
+      department_name: "Cardiology",
+      salary: 64000,
+      staff_type: "Nurse",
+      email: "deepa.joseph@his.local",
+    },
     // Lab Tech
-    { emp_id: "EMP-3001", name: "Ramesh Meena", gender: "M", role_name: "Lab Technician", department_name: "Laboratory", salary: 55000, staff_type: "Lab Technician", email: "ramesh.meena@his.local" },
+    {
+      emp_id: "EMP-3001",
+      name: "Ramesh Meena",
+      gender: "M",
+      role_name: "Lab Technician",
+      department_name: "Laboratory",
+      salary: 55000,
+      staff_type: "Lab Technician",
+      email: "ramesh.meena@his.local",
+    },
     // Pharmacist
-    { emp_id: "EMP-4001", name: "Rajesh Gupta", gender: "M", role_name: "Pharmacist", department_name: "Pharmacy", salary: 58000, staff_type: "Pharmacist", email: "rajesh.gupta@his.local" },
+    {
+      emp_id: "EMP-4001",
+      name: "Rajesh Gupta",
+      gender: "M",
+      role_name: "Pharmacist",
+      department_name: "Pharmacy",
+      salary: 58000,
+      staff_type: "Pharmacist",
+      email: "rajesh.gupta@his.local",
+    },
     // Admins (Team members)
-    { emp_id: "EMP-5001", name: "Ashutosh Sharma", gender: "M", role_name: "Admin", department_name: "Administration", salary: 90000, admin_role: "IT", email: "ashutosh@manit.ac.in" },
-    { emp_id: "EMP-5002", name: "Akarshan Pathak", gender: "M", role_name: "Admin", department_name: "Administration", salary: 90000, admin_role: "Billing", email: "akarshan@manit.ac.in" },
-    { emp_id: "EMP-5003", name: "Nikita Patidar", gender: "F", role_name: "Admin", department_name: "Administration", salary: 88000, admin_role: "HR", email: "nikita@manit.ac.in" },
-    { emp_id: "EMP-5004", name: "Bhavishya Sisodiya", gender: "M", role_name: "Admin", department_name: "Administration", salary: 88000, admin_role: "Receptionist", email: "bhavishya@manit.ac.in" },
+    {
+      emp_id: "EMP-5001",
+      name: "Sumit Sahai",
+      gender: "M",
+      role_name: "Admin",
+      department_name: "Administration",
+      salary: 90000,
+      admin_role: "IT",
+      email: "sumit@manit.ac.in",
+    },
+    {
+      emp_id: "EMP-5002",
+      name: "Akarshan Pathak",
+      gender: "M",
+      role_name: "Admin",
+      department_name: "Administration",
+      salary: 90000,
+      admin_role: "Billing",
+      email: "akarshan@manit.ac.in",
+    },
+    {
+      emp_id: "EMP-5003",
+      name: "Nikita Patidar",
+      gender: "F",
+      role_name: "Admin",
+      department_name: "Administration",
+      salary: 88000,
+      admin_role: "HR",
+      email: "nikita@manit.ac.in",
+    },
+    // {
+    //   emp_id: "EMP-5004",
+    //   name: "Bhavishya Sisodiya",
+    //   gender: "M",
+    //   role_name: "Admin",
+    //   department_name: "Administration",
+    //   salary: 88000,
+    //   admin_role: "Receptionist",
+    //   email: "bhavishya@manit.ac.in",
+    // },
   ];
 
   const doctorMap = {};
@@ -234,7 +524,9 @@ async function seedDatabase() {
         });
       }
       doctorMap[emp.name] = docRecord;
-    } else if (["Nurse", "Lab Technician", "Pharmacist"].includes(emp.role_name)) {
+    } else if (
+      ["Nurse", "Lab Technician", "Pharmacist"].includes(emp.role_name)
+    ) {
       let staffRecord = await MedicalStaff.findOne({ emp_id: empDoc._id });
       if (!staffRecord) {
         await MedicalStaff.create({
@@ -268,7 +560,7 @@ async function seedDatabase() {
         role: "admin",
       },
     },
-    { upsert: true }
+    { upsert: true },
   );
 
   // Doctor user
@@ -282,7 +574,7 @@ async function seedDatabase() {
         emp_id: (await Doctor.findOne({ name: "Dr. Jay Kumar Jain" }))?._id,
       },
     },
-    { upsert: true }
+    { upsert: true },
   );
 
   // Pharmacist user
@@ -295,15 +587,55 @@ async function seedDatabase() {
         role: "pharmacist",
       },
     },
-    { upsert: true }
+    { upsert: true },
   );
 
   // 10. PATIENTS
   const patients = [
-    { patient_id: "PAT-1001", name: "Vikram Malhotra", dob: new Date("1985-04-12"), gender: "M", phone: "9826011223", email: "vikram.m@gmail.com", address: "Arera Colony, Bhopal", blood_group: "B+", status: "OPD" },
-    { patient_id: "PAT-1002", name: "Pooja Verma", dob: new Date("1992-08-23"), gender: "F", phone: "9826022334", email: "pooja.v@gmail.com", address: "MP Nagar Zone 2, Bhopal", blood_group: "O+", status: "IPD" },
-    { patient_id: "PAT-1003", name: "Suresh Chandra", dob: new Date("1960-11-05"), gender: "M", phone: "9826033445", email: "suresh.c@gmail.com", address: "Kolar Road, Bhopal", blood_group: "A+", status: "OPD" },
-    { patient_id: "PAT-1004", name: "Anjali Saxena", dob: new Date("1998-02-18"), gender: "F", phone: "9826044556", email: "anjali.s@gmail.com", address: "Shahpura, Bhopal", blood_group: "AB+", status: "OPD" },
+    {
+      patient_id: "PAT-1001",
+      name: "Vikram Malhotra",
+      dob: new Date("1985-04-12"),
+      gender: "M",
+      phone: "9826011223",
+      email: "vikram.m@gmail.com",
+      address: "Arera Colony, Bhopal",
+      blood_group: "B+",
+      status: "OPD",
+    },
+    {
+      patient_id: "PAT-1002",
+      name: "Pooja Verma",
+      dob: new Date("1992-08-23"),
+      gender: "F",
+      phone: "9826022334",
+      email: "pooja.v@gmail.com",
+      address: "MP Nagar Zone 2, Bhopal",
+      blood_group: "O+",
+      status: "IPD",
+    },
+    {
+      patient_id: "PAT-1003",
+      name: "Suresh Chandra",
+      dob: new Date("1960-11-05"),
+      gender: "M",
+      phone: "9826033445",
+      email: "suresh.c@gmail.com",
+      address: "Kolar Road, Bhopal",
+      blood_group: "A+",
+      status: "OPD",
+    },
+    {
+      patient_id: "PAT-1004",
+      name: "Anjali Saxena",
+      dob: new Date("1998-02-18"),
+      gender: "F",
+      phone: "9826044556",
+      email: "anjali.s@gmail.com",
+      address: "Shahpura, Bhopal",
+      blood_group: "AB+",
+      status: "OPD",
+    },
   ];
 
   const patMap = {};
@@ -319,7 +651,9 @@ async function seedDatabase() {
       await MedicalHistory.create({
         history_id: `HIST-${p.patient_id}`,
         patient_id: pDoc._id,
-        condition_md: p.name.includes("Suresh") ? "Type 2 Diabetes Mellitus & Hypertension" : "Routine clinical assessment",
+        condition_md: p.name.includes("Suresh")
+          ? "Type 2 Diabetes Mellitus & Hypertension"
+          : "Routine clinical assessment",
         diagnosis_date: new Date("2026-01-10"),
         notes: "Regular follow-up advised.",
       });
@@ -331,9 +665,14 @@ async function seedDatabase() {
   const ipdPatient = patMap["PAT-1002"];
   const icuRoom = roomMap["ICU-01"];
   const attendingDoc = doctorMap["Dr. Jay Kumar Jain"];
-  const assignedNurse = await MedicalStaff.findOne({ name: "Nurse Deepa Joseph" });
+  const assignedNurse = await MedicalStaff.findOne({
+    name: "Nurse Deepa Joseph",
+  });
 
-  let admission = await Admission.findOne({ patient_id: ipdPatient._id, status: "admitted" });
+  let admission = await Admission.findOne({
+    patient_id: ipdPatient._id,
+    status: "admitted",
+  });
   if (!admission && icuRoom && attendingDoc) {
     admission = await Admission.create({
       admission_id: "ADM-1001",
@@ -349,8 +688,14 @@ async function seedDatabase() {
       nurse_name: assignedNurse?.name,
     });
 
-    await Room.findByIdAndUpdate(icuRoom._id, { status: "occupied", patient: ipdPatient._id });
-    await Patient.findByIdAndUpdate(ipdPatient._id, { active_admission_id: admission._id, status: "IPD" });
+    await Room.findByIdAndUpdate(icuRoom._id, {
+      status: "occupied",
+      patient: ipdPatient._id,
+    });
+    await Patient.findByIdAndUpdate(ipdPatient._id, {
+      active_admission_id: admission._id,
+      status: "IPD",
+    });
     if (assignedNurse) {
       await NurseAssignment.create({
         admission_id: admission._id,
@@ -358,7 +703,12 @@ async function seedDatabase() {
         active: true,
       });
     }
-    console.log("Seeded Inpatient Admission for:", ipdPatient.name, "in", icuRoom.room_number);
+    console.log(
+      "Seeded Inpatient Admission for:",
+      ipdPatient.name,
+      "in",
+      icuRoom.room_number,
+    );
   }
 
   // 12. APPOINTMENTS
@@ -383,7 +733,10 @@ async function seedDatabase() {
   }
 
   // 13. MASTER BILL WITH CHARGES (CONSOLIDATED BILLING)
-  let bill = await Bill.findOne({ patient_id: apptPatient._id, status: "pending" });
+  let bill = await Bill.findOne({
+    patient_id: apptPatient._id,
+    status: "pending",
+  });
   if (!bill) {
     bill = await Bill.create({
       bill_id: "INV-1001",
@@ -416,7 +769,8 @@ async function seedDatabase() {
       doctor_emp_id: orthoDoc?._id,
       status: "completed",
       charge_amount: 500,
-      result: "Bone density and alignment within normal limits. Mild degenerative changes.",
+      result:
+        "Bone density and alignment within normal limits. Mild degenerative changes.",
     });
 
     await TestCharge.create({
@@ -437,7 +791,12 @@ async function seedDatabase() {
       amount: 25,
     });
 
-    console.log("Seeded Consolidated Bill:", bill.bill_id, "for", apptPatient.name);
+    console.log(
+      "Seeded Consolidated Bill:",
+      bill.bill_id,
+      "for",
+      apptPatient.name,
+    );
   }
 
   console.log("MANIT HIS Database seeding completed successfully!");
